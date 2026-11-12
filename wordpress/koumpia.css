@@ -1,0 +1,92 @@
+/* ============================================================
+   Training Station Fitness – κουμπιά
+   Επικόλληση: Εμφάνιση → Προσαρμογή → Πρόσθετο CSS (Astra) → Δημοσίευση
+   ============================================================ */
+
+/* 1. Όλα τα κουμπιά Elementor: ένα μπλε, ίδιο μέγεθος, χωρίς gradient */
+.elementor a.elementor-button,
+.elementor .elementor-button {
+  background: #0a62d0 !important;
+  background-image: none !important;
+  color: #fff !important;
+  border: 2px solid #0a62d0 !important;
+  border-radius: 999px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  letter-spacing: .02em !important;
+  text-transform: none !important;   /* κανονικά γράμματα: χωρίς θέμα τόνων στα κεφαλαία */
+  line-height: 1.1 !important;
+  padding: 15px 28px !important;
+  min-height: 48px;                  /* εύκολο πάτημα στο κινητό */
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+  transition: background-color .2s, border-color .2s, color .2s;
+}
+.elementor a.elementor-button .elementor-button-text,
+.elementor a.elementor-button .elementor-button-icon { color: inherit !important; text-shadow: none !important; filter: none !important; }
+.elementor a.elementor-button .elementor-button-icon svg { fill: currentColor !important; }
+
+/* Το κουμπί κράτησης μένει το πιο εμφανές */
+.elementor a.elementor-button[href*="book-now"] {
+  font-size: 18px !important;
+  padding: 18px 34px !important;
+  min-height: 56px;
+}
+.elementor a.elementor-button:hover,
+.elementor a.elementor-button:focus-visible {
+  background: #084fa8 !important;
+  border-color: #084fa8 !important;
+}
+
+/* 2. Δευτερεύοντα κουμπιά (όλα εκτός από την κράτηση): περίγραμμα αντί για γέμισμα */
+.elementor a.elementor-button:not([href*="book-now"]) {
+  background: transparent !important;
+  color: #0a62d0 !important;
+}
+.elementor a.elementor-button:not([href*="book-now"]):hover,
+.elementor a.elementor-button:not([href*="book-now"]):focus-visible {
+  background: #0a62d0 !important;
+  color: #fff !important;
+}
+
+/* 3. Κουμπί «Αποστολή» στη φόρμα επικοινωνίας (WPForms) */
+div.wpforms-container-full .wpforms-form button[type=submit].wpforms-submit {
+  background: #0a62d0 !important;
+  color: #fff !important;
+  border: 2px solid #0a62d0 !important;
+  border-radius: 999px !important;
+  font-size: 16px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  padding: 14px 32px !important;
+  min-height: 48px;
+  height: auto !important;
+}
+div.wpforms-container-full .wpforms-form button[type=submit].wpforms-submit:hover {
+  background: #084fa8 !important;
+  border-color: #084fa8 !important;
+}
+
+/* 4. Cookie banner (Cookie Notice): ευανάγνωστα κουμπιά */
+#cookie-notice .cn-button {
+  font-size: 14px !important;
+  font-weight: 600 !important;
+  padding: 12px 22px !important;
+  min-height: 44px;
+  border-radius: 999px !important;
+  line-height: 1.1 !important;
+}
+#cookie-notice #cn-accept-cookie {
+  background: #fff !important;
+  color: #46494c !important;
+  border: 1px solid #fff !important;
+}
+#cookie-notice #cn-more-info {
+  background: transparent !important;
+  color: #fff !important;
+  border: 1px solid #fff !important;
+}
+
+/* 5. Μικρό κενό ανάμεσα σε εικονίδιο και κείμενο */
+.elementor a.elementor-button .elementor-button-content-wrapper { gap: 8px; align-items: center; }
