@@ -22,8 +22,7 @@
 
 ## Πληροφορίες
 
-- [Τιμές](https://trainingstationfitness.com/pricing/): Τιμοκατάλογος και πακέτα
-- [Συχνές ερωτήσεις](https://trainingstationfitness.com/faq/): Απαντήσεις για υπηρεσίες, κρατήσεις και τιμές
+- [Συχνές ερωτήσεις](https://trainingstationfitness.com/faq/): Απαντήσεις για υπηρεσίες και κρατήσεις
 - [Ποιοι είμαστε](https://trainingstationfitness.com/about-us/): Η ομάδα και τα προσόντα της
 - [Επικοινωνία](https://trainingstationfitness.com/contact/): Διεύθυνση, χάρτης, τηλέφωνα
 - [Gift cards](https://trainingstationfitness.com/gift-cards/): Δωροκάρτες προπόνησης

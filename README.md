@@ -9,7 +9,7 @@ python3 build.py --final       # χωρίς τις σημάνσεις
 cd site && python3 -m http.server 8080
 ```
 
-Τιμές, ωράριο, ΤΚ, link Google Business και Facebook Pixel συμπληρώνονται στην αρχή του `build.py` (`BUSINESS`, `PRICES`).
+Ωράριο, ΤΚ, link Google Business και Facebook Pixel συμπληρώνονται στην αρχή του `build.py` (`BUSINESS`).
 
 ## Τι άλλαξε
 
@@ -20,8 +20,8 @@ cd site && python3 -m http.server 8080
 | Τίτλοι | «Recovery Injuries - Training Station Fitness» | Απλοί και φυσικοί: «Pilates Reformer \| Training Station Fitness». Χωρίς λέξεις-κλειδιά που μοιάζουν με διαφήμιση |
 | Τοπικό SEO | Πουθενά | Στα δομημένα δεδομένα (διεύθυνση, συντεταγμένες, περιοχές), στις περιγραφές για τη Google, στο llms.txt και στη διεύθυνση της σελίδας – όχι στους τίτλους |
 | Κεφαλαία | Τόνοι σε κεφαλαία σε κάποιους browsers | Χωρίς τόνους στα κεφαλαία (με διαλυτικά όπου χρειάζεται) |
-| Τιμές | Δεν υπήρχαν | Νέα σελίδα `/pricing/` |
 | FAQ | Δεν υπήρχαν | Σε κάθε υπηρεσία + `/faq/` |
+| Εμφάνιση | Elementor με πολλά στοιχεία | Μινιμαλιστική: λευκό, μία γραμματοσειρά, λεπτές γραμμές, χωρίς τιμές |
 | E-E-A-T | Βιογραφικό μόνο στο About | Προσόντα παντού, `Person` schema, ενότητα Forces με αναφορά στη ΣΑΕΑ |
 | Εικόνες | PNG έως ~770KB | WebP ~20–60KB, περιγραφικά ονόματα και alt, lazy loading |
 | Cookies | «Αν συνεχίσετε…», Pixel πριν τη συγκατάθεση | Αποδοχή / Μόνο απαραίτητα, Consent Mode v2, Pixel μόνο μετά από αποδοχή |
@@ -40,7 +40,7 @@ cd site && python3 -m http.server 8080
 1. AIOSEO → Search Appearance → Local Business: τύπος *ExerciseGym*, στοιχεία όπως στο `BUSINESS`. Αλλιώς επικόλλησε το JSON-LD από τον κώδικα της `site/index.html`.
 2. AIOSEO → κάθε σελίδα: τίτλος «Όνομα σελίδας | Training Station Fitness» και description από το `build.py` (`desc`).
 3. Elementor: ο πρώτος τίτλος κάθε σελίδας → H1· το «Είπαν για εμάς» → H2.
-4. Νέες σελίδες «Τιμές» και «Συχνές ερωτήσεις» (κείμενο από το preview). FAQ με το AIOSEO FAQ block για αυτόματο schema.
+4. Νέα σελίδα «Ερωτήσεις» (κείμενο από το preview). FAQ με το AIOSEO FAQ block για αυτόματο schema.
 5. SiteGround Optimizer: WebP, lazy load· το Facebook Pixel να μπαίνει μόνο client-side ώστε η cache να γίνει `HIT`.
 6. Complianz ή CookieYes με Google Consent Mode v2· αφαίρεση του υπάρχοντος banner.
 7. Ανέβασε το `site/llms.txt` στη ρίζα (File Manager του SiteGround).
@@ -49,6 +49,6 @@ cd site && python3 -m http.server 8080
 **Β. Στατικό site** – τα αρχεία του `site/` ανεβαίνουν όπως είναι. Χρειάζεται εξωτερικό σύστημα κρατήσεων στη θέση του Booknetic και υπηρεσία για τη φόρμα επικοινωνίας.
 
 ## Πριν ανέβει
-- Σημεία σημειωμένα κίτρινα: ΤΚ, ωράριο, τιμές, link Google Business, διάρκεια gift card, οδηγίες πρόσβασης.
+- Σημεία σημειωμένα κίτρινα: ΤΚ, ωράριο, link Google Business, διάρκεια gift card, οδηγίες πρόσβασης.
 - Οι απαντήσεις των FAQ γράφτηκαν με βάση τα κείμενα του site – διάβασέ τες και διόρθωσε ό,τι δεν ισχύει.
 - Το πλήρες κείμενο όρων/απορρήτου μπαίνει αυτούσιο από το υπάρχον site.
