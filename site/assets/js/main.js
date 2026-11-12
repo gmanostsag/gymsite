@@ -1,3 +1,24 @@
+// Ελληνικά κεφαλαία χωρίς τόνους: όπου η μορφοποίηση κάνει το κείμενο κεφαλαίο,
+// αφαιρούμε τους τόνους (και βάζουμε διαλυτικά όπου χρειάζεται: ρολόι -> ΡΟΛΟΪ).
+// Στον κώδικα HTML το κείμενο μένει σωστά τονισμένο για τις μηχανές αναζήτησης.
+(function(){
+  document.documentElement.lang='el';
+  function strip(t){
+    return t.normalize('NFD')
+      .replace(/([αεοΑΕΟ])\u0301([ιυ])(?!\u0308)/g,function(m,a,b){return a+b+'\u0308'})
+      .replace(/\u0301/g,'').normalize('NFC');
+  }
+  function run(root){
+    var w=document.createTreeWalker(root||document.body,NodeFilter.SHOW_TEXT,null),n,cache=new Map();
+    while((n=w.nextNode())){
+      var el=n.parentElement; if(!el||!/[\u0300-\u036f\u0386-\u03ce\u1f00-\u1fff]/.test(n.nodeValue.normalize('NFD'))) continue;
+      var up=cache.get(el); if(up===undefined){up=getComputedStyle(el).textTransform==='uppercase';cache.set(el,up)}
+      if(up){var v=strip(n.nodeValue); if(v!==n.nodeValue) n.nodeValue=v}
+    }
+  }
+  run(); window.tsfCaps=run;
+})();
+
 // Μενού κινητού
 (function(){
   var b=document.querySelector('.menu-btn'), n=document.querySelector('nav.main');

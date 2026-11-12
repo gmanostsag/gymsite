@@ -89,7 +89,7 @@ SERVICES = [
   title="Personal Trainer στο Περιστέρι (Μπουρνάζι) | Training Station Fitness",
   desc="Ατομικό personal training στο Περιστέρι, πλ. Μπουρναζίου, με Καθηγητή Φυσικής Αγωγής: αξιολόγηση, εξατομικευμένο πρόγραμμα, διατροφικές συμβουλές. Κλείσε δωρεάν γνωριμία.",
   stype="Personal training",
-  body=[("p","Το ατομικό **Personal Training** δεν είναι απλώς μια προπόνηση – είναι μια εξατομικευμένη εμπειρία που δημιουργείται αποκλειστικά για τις **ανάγκες**, τους **στόχους** και τις **δυνατότητές σου**, στον χώρο μας στην πλατεία Μπουρναζίου στο Περιστέρι."),
+  body=[("p","Το ατομικό **Personal Training** δεν είναι απλώς μια προπόνηση – είναι μια εξατομικευμένη εμπειρία που δημιουργείται αποκλειστικά για τις **ανάγκες**, τους **στόχους** και τις **δυνατότητές σου**."),
    ("h2","Γιατί να επιλέξεις Personal Training;"),
    ("ul",["**Εξατομίκευση**: Κάθε πρόγραμμα σχεδιάζεται αποκλειστικά για εσένα, λαμβάνοντας υπόψη το επίπεδο φυσικής κατάστασης, τυχόν τραυματισμούς και τους στόχους σου.",
           "**Αποτελεσματικότητα**: Με την καθοδήγηση ενός έμπειρου προπονητή, η προπόνησή σου γίνεται πιο αποδοτική, μεγιστοποιώντας τα αποτελέσματα στον ελάχιστο χρόνο.",
@@ -107,7 +107,7 @@ SERVICES = [
   title="Pilates Reformer στο Περιστέρι (Μπουρνάζι) | Training Station",
   desc="Μαθήματα Pilates Reformer στο Περιστέρι, πλατεία Μπουρναζίου. Ενδυνάμωση κορμού, καλύτερη στάση σώματος, ανακούφιση από πόνους. Για αρχάριους και προχωρημένους.",
   stype="Pilates Reformer",
-  body=[("p","Ανακάλυψε τη δύναμη και την ευλυγισία σου με τα μαθήματα **Pilates Reformer** στον χώρο μας στο Περιστέρι, την απόλυτη μέθοδο εκγύμνασης που προσφέρει εντυπωσιακά αποτελέσματα. Το κρεβάτι Reformer είναι ειδικά σχεδιασμένο για να υποστηρίζει κάθε κίνηση, μειώνοντας την καταπόνηση και επιτρέποντας την ασφαλή και σωστή ευθυγράμμιση του σώματος."),
+  body=[("p","Ανακάλυψε τη δύναμη και την ευλυγισία σου με τα μαθήματα **Pilates Reformer**, την απόλυτη μέθοδο εκγύμνασης που προσφέρει εντυπωσιακά αποτελέσματα. Το κρεβάτι Reformer είναι ειδικά σχεδιασμένο για να υποστηρίζει κάθε κίνηση, μειώνοντας την καταπόνηση και επιτρέποντας την ασφαλή και σωστή ευθυγράμμιση του σώματος."),
    ("h2","Γιατί το Reformer είναι μοναδικό;"),
    ("ul",["Προσαρμόζεται απόλυτα στο επίπεδό σου, είτε είσαι αρχάριος είτε προχωρημένος.",
           "Προσφέρει **ενδυνάμωση ολόκληρου του σώματος**, με ιδιαίτερη έμφαση στον κορμό.",
@@ -472,13 +472,13 @@ home_hero = f'''<section class="ink hero"><div class="wrap">
 <div class="hero-grid">
 <div>
 <p class="label">Personal training studio · Πλατεία Μπουρναζίου</p>
-<h1 style="margin-top:18px"><span class="thin">Training Station Fitness</span>Γυμναστήριο<br>στο <span class="blue-txt">Περιστέρι</span></h1>
-<p class="lead">Η γυμναστική σου μόλις απέκτησε ενδιαφέρον. Εξατομικευμένη προπόνηση, Pilates Reformer και διατροφή, με Καθηγητές Φυσικής Αγωγής και Διαιτολόγο.</p>
+<h1 class="h-slogan" style="margin-top:18px"><span class="thin">Training Station Fitness</span>Η γυμναστική σου μόλις απέκτησε <span class="blue-txt">ενδιαφέρον</span></h1>
+<p class="lead">Εξατομικευμένη προπόνηση, Pilates Reformer και διατροφή, με Καθηγητές Φυσικής Αγωγής και Διαιτολόγο.</p>
 <div class="btns"><a class="btn" href="/book-now/">Κλείσε δωρεάν γνωριμία {ARR}</a><a class="btn line" href="/services/">Δες τις υπηρεσίες</a></div>
 </div>
 <div class="pins">
 <img class="p1" src="/assets/img/eleuthera-vari-bournazi.webp" width="900" height="720" alt="Rack, ιμάντες TRX και μπάρα Olympic στον χώρο ελεύθερων βαρών του Training Station Fitness" fetchpriority="high">
-<img class="p2" src="/assets/img/aerobia-mixanimata-bournazi.webp" width="900" height="720" alt="Διάδρομος, αλτήρες και πολυόργανο τροχαλίας στο γυμναστήριο στο Περιστέρι">
+<img class="p2" src="/assets/img/aerobia-mixanimata-bournazi.webp" width="900" height="720" alt="Διάδρομος, αλτήρες και πολυόργανο τροχαλίας στον χώρο προπόνησης">
 </div>
 </div>
 <div class="facts">
@@ -525,8 +525,8 @@ home_body = f'''
 {faq_section(home_faq)}
 {location()}
 '''
-pages.append(page("/", "Γυμναστήριο Περιστέρι – Personal Training & Pilates | Training Station",
-    "Personal training, Pilates Reformer, group 2–3 ατόμων & αποκατάσταση τραυματισμών στην πλ. Μπουρναζίου, Περιστέρι. Καθηγητές Φ.Α. & Διαιτολόγος.",
+pages.append(page("/", "Training Station Fitness",
+    "Personal training studio στην πλατεία Μπουρναζίου, στο Περιστέρι. Ατομική προπόνηση, ομάδες έως 3 ατόμων, Pilates Reformer και διατροφή, με Καθηγητές Φυσικής Αγωγής και Διαιτολόγο.",
     home_hero, home_body, extra_ld=[faq_ld(home_faq, SITE + "/")]))
 
 # Σελίδες υπηρεσιών
@@ -536,7 +536,7 @@ for s in SERVICES:
     svc_ld = {"@type": "Service", "@id": url + "#service", "name": s["name"], "serviceType": s["stype"], "url": url,
               "description": s["desc"], "provider": {"@id": SITE + "/#gym"},
               "areaServed": {"@type": "City", "name": "Περιστέρι"} if not s.get("online") else [{"@type": "City", "name": "Περιστέρι"}, {"@type": "Country", "name": "Ελλάδα"}]}
-    head = phero(f"Πλατφόρμα {plat} · {s['name']}", esc(s["h1"]), esc(s["desc"]), s["icon"])
+    head = phero(f"Πλατφόρμα {plat}", esc(s["name"]), esc(tag), s["icon"])
     others = "".join(f'<a href="/{o["slug"]}/">{esc(o["name"])}</a>' for o in SERVICES if o is not s)
     body = f'''<section><div class="wrap svc">
 <article class="prose">{blocks(s["body"])}</article>
@@ -553,7 +553,7 @@ for s in SERVICES:
 <section style="padding-top:0"><div class="wrap"><p class="label">Δες επίσης</p><div class="see-also">{others}<a href="/pricing/">Τιμές</a></div></div></section>
 {cta_band()}
 {location()}'''
-    pages.append(page(f"/{s['slug']}/", s["title"], s["desc"], head, body,
+    pages.append(page(f"/{s['slug']}/", f"{s['name']} | Training Station Fitness", s["desc"], head, body,
                       crumbs=[("Υπηρεσίες", "/services/"), (s["name"], f"/{s['slug']}/")],
                       extra_ld=[svc_ld, faq_ld(s["faq"], url)]))
 
@@ -562,9 +562,9 @@ svc_cards = "".join(f'''<a class="pcard" href="/{s["slug"]}/" style="text-decora
 <img src="/assets/img/{s["icon"]}" alt="" width="64" height="64" loading="lazy" style="width:64px;height:64px">
 <p class="label">Πλατφόρμα {BOARD[s["slug"]][0]}</p><h3>{esc(s["name"])}</h3><p style="color:var(--muted)">{esc(BOARD[s["slug"]][3])}</p>
 <span style="margin-top:auto;font-weight:600;color:var(--blue-2)">Μάθε περισσότερα →</span></a>''' for s in SERVICES)
-pages.append(page("/services/", "Υπηρεσίες Γυμναστηρίου στο Περιστέρι | Training Station Fitness",
+pages.append(page("/services/", "Υπηρεσίες | Training Station Fitness",
     "Personal training, Pilates Reformer, group 2–3 ατόμων, online coaching, αποκατάσταση τραυματισμών, Forces training και διατροφή στο Περιστέρι.",
-    phero("Υπηρεσίες", "Υπηρεσίες γυμναστηρίου<br>στο <span class=\"blue-txt\">Περιστέρι</span>", "Κάθε πρόγραμμα ξεκινά με αξιολόγηση και σχεδιάζεται από Καθηγητές Φυσικής Αγωγής για τους δικούς σου στόχους."),
+    phero("Υπηρεσίες", "Τι μπορούμε<br>να κάνουμε <span class=\"blue-txt\">μαζί</span>", "Κάθε πρόγραμμα ξεκινά με αξιολόγηση και σχεδιάζεται από Καθηγητές Φυσικής Αγωγής για τους δικούς σου στόχους."),
     f'''<section class="ink" style="padding-top:0"><div class="wrap">{board()}</div></section>
 <section><div class="wrap"><div class="cards">{svc_cards}</div></div></section>{STEPS}{cta_band()}''',
     crumbs=[("Υπηρεσίες", "/services/")],
@@ -583,7 +583,7 @@ offers = [{"@type": "Offer", "name": f"{a} – {b_}", "price": "0" if c == "Δω
 price_faq = [("Υπάρχει δωρεάν δοκιμή;", "Ναι, η πρώτη ενημερωτική συνάντηση γνωριμίας είναι δωρεάν."),
              ("Πώς πληρώνω;", "Μπορείς να πληρώσεις online κατά την κράτηση ή στον χώρο μας."),
              ("Ισχύουν οι τιμές για gift cards;", "Ναι, μπορείς να αγοράσεις οποιοδήποτε πακέτο ως δωροκάρτα.")]
-pages.append(page("/pricing/", "Τιμές Personal Training & Pilates Περιστέρι | Training Station",
+pages.append(page("/pricing/", "Τιμές | Training Station Fitness",
     "Τιμές και πακέτα για personal training, Pilates Reformer, group 2–3 ατόμων, online coaching και διατροφή στο Training Station Fitness, Περιστέρι. Δωρεάν γνωριμία.",
     phero("Τιμές", "Τιμές &amp; πακέτα", "Ξεκάθαρες τιμές, χωρίς δεσμεύσεις. Η πρώτη συνάντηση γνωριμίας είναι δωρεάν."),
     f'''<section><div class="wrap"><div class="cards">{pcards}</div>
@@ -597,7 +597,7 @@ seen, uniq = set(), []
 for q in all_faq:
     if q[0] not in seen: seen.add(q[0]); uniq.append(q)
 faq_blocks = f"<h3>Γενικά</h3>{faq_items(home_faq)}" + "".join(f"<h3>{esc(s['name'])}</h3>{faq_items(s['faq'])}" for s in SERVICES) + f"<h3>Τιμές &amp; πληρωμές</h3>{faq_items(price_faq)}"
-pages.append(page("/faq/", "Συχνές Ερωτήσεις | Training Station Fitness Περιστέρι",
+pages.append(page("/faq/", "Συχνές ερωτήσεις | Training Station Fitness",
     "Απαντήσεις για personal training, Pilates Reformer, αποκατάσταση τραυματισμών, αθλήματα Αστυνομίας, διατροφή, τιμές και κρατήσεις στο Training Station.",
     phero("FAQ", "Συχνές ερωτήσεις", "Δεν βρίσκεις αυτό που ψάχνεις; Πάρε μας στο 210 576 7892."),
     f'''<section><div class="wrap faq-grid"><div><p class="label">Ενότητες</p><div class="see-also">{"".join(f'<a href="/{s["slug"]}/">{esc(s["name"])}</a>' for s in SERVICES)}</div></div>
@@ -605,7 +605,7 @@ pages.append(page("/faq/", "Συχνές Ερωτήσεις | Training Station F
     crumbs=[("Συχνές ερωτήσεις", "/faq/")], extra_ld=[faq_ld(uniq, SITE + "/faq/")]))
 
 # Η ομάδα
-pages.append(page("/about-us/", "Ποιοι Είμαστε – Μάνος & Μελίνα Τσαγκατάκη | Training Station Fitness",
+pages.append(page("/about-us/", "Η ομάδα | Training Station Fitness",
     "Γνώρισε την ομάδα του Training Station Fitness στο Περιστέρι: Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής (ΤΕΦΑΑ, ΣΑΕΑ) και Μελίνα Τσαγκατάκη, Διαιτολόγος.",
     phero("Η ομάδα", "Ποιοι είμαστε", "Επιστημονική γνώση, σωστή καθοδήγηση και ασφάλεια, σε έναν φιλικό χώρο στην πλατεία Μπουρναζίου."),
     f'''<section><div class="wrap people">
@@ -628,7 +628,7 @@ pages.append(page("/about-us/", "Ποιοι Είμαστε – Μάνος & Με
     extra_ld=people_nodes() + [{"@type": "AboutPage", "@id": SITE + "/about-us/#about", "url": SITE + "/about-us/", "mainEntity": {"@id": SITE + "/#gym"}}]))
 
 # Επικοινωνία
-pages.append(page("/contact/", "Επικοινωνία – Παρασκευοπούλου 47, Περιστέρι | Training Station Fitness",
+pages.append(page("/contact/", "Επικοινωνία | Training Station Fitness",
     "Επικοινώνησε με το Training Station Fitness: Παρασκευοπούλου 47, πλατεία Μπουρναζίου, Περιστέρι. Τηλ. 210 576 7892 · 694 619 4809 · info@trainingstationfitness.com.",
     phero("Επικοινωνία", "Ας μιλήσουμε", "Συνεδρίες και ενημέρωση γίνονται κατόπιν ραντεβού. Γράψε μας ή πάρε τηλέφωνο."),
     f'''<section><div class="wrap split" style="align-items:start">
@@ -648,7 +648,7 @@ pages.append(page("/contact/", "Επικοινωνία – Παρασκευοπ�
     extra_ld=[{"@type": "ContactPage", "@id": SITE + "/contact/#contact", "url": SITE + "/contact/", "mainEntity": {"@id": SITE + "/#gym"}}]))
 
 # Κράτηση
-pages.append(page("/book-now/", "Online Κράτηση Ραντεβού | Training Station Fitness Περιστέρι",
+pages.append(page("/book-now/", "Κράτηση | Training Station Fitness",
     "Κλείσε online ραντεβού για personal training, group 2–3 ατόμων, digital coaching, διατροφή ή δωρεάν συνάντηση γνωριμίας στο Training Station Fitness, Περιστέρι.",
     phero("Κράτηση", "Κλείσε online ραντεβού", f'Διάλεξε υπηρεσία, ημέρα και ώρα. Δεν βρίσκεις διαθεσιμότητα; Κάλεσε στο <a href="tel:{BUSINESS["phone"]}">{BUSINESS["phone_disp"]}</a>.'),
     f'''<section><div class="wrap svc">
@@ -661,7 +661,7 @@ pages.append(page("/book-now/", "Online Κράτηση Ραντεβού | Traini
     crumbs=[("Κράτηση", "/book-now/")]))
 
 # Gift cards
-pages.append(page("/gift-cards/", "Δωροκάρτες Γυμναστικής (Gift Cards) Περιστέρι | Training Station",
+pages.append(page("/gift-cards/", "Gift cards | Training Station Fitness",
     "Χάρισε προπόνηση! Δωροκάρτες για personal training, Pilates Reformer και διατροφή στο Training Station Fitness, Περιστέρι. Ιδανικό δώρο για γενέθλια και γιορτές.",
     phero("Gift cards", "Χάρισε<br><span class=\"blue-txt\">προπόνηση</span>", "Το δώρο που φροντίζει την υγεία: συνεδρίες personal training, Pilates Reformer ή διατροφής, σε δωροκάρτα."),
     f'''<section><div class="wrap split">
@@ -675,7 +675,7 @@ pages.append(page("/gift-cards/", "Δωροκάρτες Γυμναστικής (
     crumbs=[("Gift cards", "/gift-cards/")], og_image="gift-card.webp"))
 
 # Όροι
-pages.append(page("/conditions/", "Όροι Χρήσης & Πολιτική Απορρήτου | Training Station Fitness",
+pages.append(page("/conditions/", "Όροι χρήσης | Training Station Fitness",
     "Όροι χρήσης, πολιτική απορρήτου και cookies του trainingstationfitness.com (ΕΜΜΑΝΟΥΗΛ ΤΣΑΓΚΑΤΑΚΗΣ – Training Station Fitness).",
     phero("Νομικά", "Όροι χρήσης &amp; απόρρητο"),
     f'''<section><div class="wrap"><div class="prose">

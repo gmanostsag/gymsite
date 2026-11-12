@@ -294,3 +294,4 @@ footer.site .legal{border-top:1px solid var(--line-ink);margin-top:56px;padding-
 .aside .btn.line{color:var(--on-ink);border-color:var(--on-ink)}
 .aside .btn.line:hover{background:var(--on-ink);color:var(--ink)}
 .giant{font-size:clamp(2.4rem,10.2vw,9.4rem);white-space:normal;overflow:visible}
+.hero h1.h-slogan{font-size:clamp(2.6rem,5.2vw,4.9rem)}

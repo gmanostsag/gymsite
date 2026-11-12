@@ -17,7 +17,9 @@ cd site && python3 -m http.server 8080
 |---|---|---|
 | Schema | Μόνο `Organization` | `ExerciseGym` με διεύθυνση, geo, τηλέφωνα, περιοχές, `Person` (Μάνος, Μελίνα), `Service` ανά υπηρεσία, `FAQPage`, `BreadcrumbList`, `OfferCatalog` |
 | H1 | 2 στην αρχική, 0 στις υπηρεσίες | Ακριβώς 1 σε κάθε σελίδα, με «Περιστέρι» |
-| Τίτλοι/descriptions | Αγγλικά, χωρίς περιοχή, greeklish διεύθυνση | Ελληνικά, με τοπικές λέξεις-κλειδιά, ≤ 70 / ≤ 170 χαρακτήρες |
+| Τίτλοι | «Recovery Injuries - Training Station Fitness» | Απλοί και φυσικοί: «Pilates Reformer \| Training Station Fitness». Χωρίς λέξεις-κλειδιά που μοιάζουν με διαφήμιση |
+| Τοπικό SEO | Πουθενά | Στα δομημένα δεδομένα (διεύθυνση, συντεταγμένες, περιοχές), στις περιγραφές για τη Google, στο llms.txt και στη διεύθυνση της σελίδας – όχι στους τίτλους |
+| Κεφαλαία | Τόνοι σε κεφαλαία σε κάποιους browsers | Χωρίς τόνους στα κεφαλαία (με διαλυτικά όπου χρειάζεται) |
 | Τιμές | Δεν υπήρχαν | Νέα σελίδα `/pricing/` |
 | FAQ | Δεν υπήρχαν | Σε κάθε υπηρεσία + `/faq/` |
 | E-E-A-T | Βιογραφικό μόνο στο About | Προσόντα παντού, `Person` schema, ενότητα Forces με αναφορά στη ΣΑΕΑ |
@@ -36,7 +38,7 @@ cd site && python3 -m http.server 8080
 
 **Α. Μένεις στο WordPress (προτείνεται)** – αντιγράφεις τις αλλαγές:
 1. AIOSEO → Search Appearance → Local Business: τύπος *ExerciseGym*, στοιχεία όπως στο `BUSINESS`. Αλλιώς επικόλλησε το JSON-LD από τον κώδικα της `site/index.html`.
-2. AIOSEO → κάθε σελίδα: τίτλος & description από το `build.py` (`title`, `desc`).
+2. AIOSEO → κάθε σελίδα: τίτλος «Όνομα σελίδας | Training Station Fitness» και description από το `build.py` (`desc`).
 3. Elementor: ο πρώτος τίτλος κάθε σελίδας → H1· το «Είπαν για εμάς» → H2.
 4. Νέες σελίδες «Τιμές» και «Συχνές ερωτήσεις» (κείμενο από το preview). FAQ με το AIOSEO FAQ block για αυτόματο schema.
 5. SiteGround Optimizer: WebP, lazy load· το Facebook Pixel να μπαίνει μόνο client-side ώστε η cache να γίνει `HIT`.
