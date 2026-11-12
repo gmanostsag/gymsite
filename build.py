@@ -200,8 +200,20 @@ SERVICES = [
 ]
 
 # ---------------------------------------------------------------- πλαίσιο σελίδας
-NAV = [("/", "Αρχική"), ("/services/", "Υπηρεσίες"), ("/pricing/", "Τιμές"), ("/about-us/", "Ποιοι είμαστε"),
-       ("/faq/", "Συχνές ερωτήσεις"), ("/contact/", "Επικοινωνία")]
+NAV = [("/", "Αρχική"), ("/services/", "Υπηρεσίες"), ("/pricing/", "Τιμές"), ("/about-us/", "Η ομάδα"),
+       ("/faq/", "FAQ"), ("/contact/", "Επικοινωνία")]
+
+# Για τον "πίνακα αναχωρήσεων": πλατφόρμα, μορφή, κατάσταση, ετικέτα κάρτας
+BOARD = {
+    "personal-training": ("01", "Ατομικά · 1 προς 1", "Με ραντεβού", "Ένας προπονητής, μόνο για σένα."),
+    "pilates": ("02", "Reformer · ατομικά ή μικρή ομάδα", "Με ραντεβού", "Δυνατός κορμός, καλύτερη στάση σώματος."),
+    "group-training": ("03", "Μικρή ομάδα · 2–3 άτομα", "Με ραντεβού", "Με φίλους, χωρίς να χάνεται η εξατομίκευση."),
+    "recovery-injuries": ("04", "Ατομικά · μετά από αξιολόγηση", "Με ραντεβού", "Ασφαλής επιστροφή μετά από τραυματισμό."),
+    "army-security-forces-training": ("05", "Αστυνομία · Στρατός · Σώματα", "Με ραντεβού", "Προετοιμασία για τις αθλητικές δοκιμασίες."),
+    "digital-coaching": ("06", "Online · όπου κι αν είσαι", "Online", "Πρόγραμμα, βίντεο και καθοδήγηση από απόσταση."),
+    "dietetics-and-nutrition": ("07", "Διαιτολόγος · δια ζώσης ή online", "Online & δια ζώσης", "Εξατομικευμένο διατροφικό πλάνο."),
+}
+SERVICES.sort(key=lambda s: BOARD[s["slug"]][0])
 
 def gym_node():
     b = BUSINESS
@@ -246,6 +258,8 @@ def people_nodes():
          "knowsAbout": ["Κλινική διατροφή", "Αθλητική διατροφή", "Απώλεια βάρους"]},
     ]
 
+ARR = '<span class="arr" aria-hidden="true">→</span>'
+
 def page(path, title, desc, h1_html, body, crumbs=None, extra_ld=None, og_image="eleuthera-vari-bournazi.webp", noindex=False):
     url = SITE + path
     graph = [
@@ -268,27 +282,31 @@ def page(path, title, desc, h1_html, body, crumbs=None, extra_ld=None, og_image=
         lis = '<li><a href="/">Αρχική</a></li>' + "".join(
             (f'<li><a href="{p}">{esc(n)}</a></li>' if i < len(crumbs) - 1 else f'<li aria-current="page">{esc(n)}</li>')
             for i, (n, p) in enumerate(crumbs))
-        crumbs_html = f'<nav class="crumbs wrap" aria-label="Breadcrumb"><ol>{lis}</ol></nav>'
+        crumbs_html = f'<nav class="crumbs" aria-label="Breadcrumb"><ol>{lis}</ol></nav>'
+    h1_html = h1_html.replace("{CRUMBS}", crumbs_html)
 
-    nav = "".join(f'<li><a href="{h}"{" aria-current=\"page\"" if h == path else ""}>{esc(t)}</a></li>' for h, t in NAV)
+    cur = lambda h: ' aria-current="page"' if h == path else ""
+    nav = "".join(f'<li><a href="{h}"{cur(h)}>{esc(t)}</a></li>' for h, t in NAV)
     svc_links = "".join(f'<li><a href="/{s["slug"]}/">{esc(s["name"])}</a></li>' for s in SERVICES)
     social = "".join(f'<li><a href="{u}" rel="noopener" target="_blank">{esc(n)}</a></li>' for n, u in BUSINESS["social"].items())
     gb = BUSINESS["google_business"]
-    reviews_link = f'<li><a href="{gb}" rel="noopener" target="_blank">Κριτικές Google</a></li>' if gb else (f'<li>{todo("Κριτικές Google (link)","Βάλε το link του Google Business Profile")}</li>')
+    reviews_link = f'<li><a href="{gb}" rel="noopener" target="_blank">Κριτικές Google</a></li>' if gb else f'<li>{todo("Κριτικές Google", "Βάλε το link του Google Business Profile")}</li>'
     pixel = f'<script>window.TSF_FB_PIXEL_ID="{BUSINESS["fb_pixel_id"]}";</script>' if BUSINESS["fb_pixel_id"] else ""
     robots = "noindex, follow" if noindex else "index, follow, max-image-preview:large, max-snippet:-1"
-    preview_bar = ('<div class="preview-bar">ΠΡΟΕΠΙΣΚΟΠΗΣΗ – τα <span class="todo">κίτρινα</span> σημεία θέλουν δικά σου στοιχεία (τιμές, ωράριο, ΤΚ κ.λπ.)</div>' if PREVIEW else "")
+    preview_bar = ('<div class="preview-bar">Προεπισκόπηση · τα <span class="todo">κίτρινα</span> σημεία περιμένουν δικά σου στοιχεία (τιμές, ωράριο, ΤΚ)</div>' if PREVIEW else "")
+    b = BUSINESS
 
     doc = f"""<!doctype html>
 <html lang="el">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{esc(title)}</title>
 <meta name="description" content="{esc(desc)}">
 <meta name="robots" content="{robots}">
 <link rel="canonical" href="{url}">
 <link rel="alternate" hreflang="el" href="{url}">
+<meta name="theme-color" content="#0d1218">
 <meta property="og:locale" content="el_GR">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Training Station Fitness">
@@ -301,7 +319,7 @@ def page(path, title, desc, h1_html, body, crumbs=None, extra_ld=None, og_image=
 <link rel="icon" href="/assets/img/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="/assets/img/favicon-192.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Commissioner:wght@400;500;600;700&family=Fira+Sans+Extra+Condensed:wght@500;600;700;800&display=swap">
 <link rel="stylesheet" href="/assets/css/style.css">
 <script>window.dataLayer=window.dataLayer||[];function gtag(){{dataLayer.push(arguments)}}gtag('consent','default',{{ad_storage:'denied',analytics_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500}});</script>
 {pixel}
@@ -312,17 +330,11 @@ def page(path, title, desc, h1_html, body, crumbs=None, extra_ld=None, og_image=
 <body>
 <a class="skip" href="#main">Μετάβαση στο περιεχόμενο</a>
 {preview_bar}
-<div class="topbar"><div class="wrap">
- <a href="tel:{BUSINESS['phone']}">☎ {BUSINESS['phone_disp']}</a>
- <a href="tel:{BUSINESS['mobile']}">📱 {BUSINESS['mobile_disp']}</a>
- <a href="mailto:{BUSINESS['email']}">✉ {BUSINESS['email']}</a>
-</div></div>
 <header class="site"><div class="wrap">
- <a class="brand" href="/" aria-label="Training Station Fitness – Αρχική"><img src="/assets/img/logo.webp" width="190" height="88" alt="Training Station Fitness – γυμναστήριο στο Περιστέρι"></a>
+ <a class="brand" href="/" aria-label="Training Station Fitness – Αρχική"><img src="/assets/img/logo.webp" width="150" height="70" alt="Training Station Fitness"></a>
  <button class="menu-btn" aria-expanded="false" aria-controls="menu">Μενού</button>
  <nav class="main" id="menu" aria-label="Κύριο μενού"><ul>{nav}<li class="cta"><a href="/book-now/">Κράτηση</a></li></ul></nav>
 </div></header>
-{crumbs_html}
 <main id="main">
 {h1_html}
 {body}
@@ -330,21 +342,22 @@ def page(path, title, desc, h1_html, body, crumbs=None, extra_ld=None, og_image=
 <footer class="site"><div class="wrap">
  <div class="cols">
   <div>
-   <img src="/assets/img/logo.webp" width="170" height="79" alt="Training Station Fitness" loading="lazy">
-   <p style="margin-top:12px"><strong>Training Station Fitness</strong><br>{address_line()}<br>
-   <a href="tel:{BUSINESS['phone']}">{BUSINESS['phone_disp']}</a> · <a href="tel:{BUSINESS['mobile']}">{BUSINESS['mobile_disp']}</a><br>
-   <a href="mailto:{BUSINESS['email']}">{BUSINESS['email']}</a><br>{hours_html()}</p>
+   <a class="brand" href="/"><img src="/assets/img/logo.webp" width="150" height="70" alt="Training Station Fitness" loading="lazy"></a>
+   <p>{address_line()}<br><br>
+   <a href="tel:{b['phone']}">{b['phone_disp']}</a> · <a href="tel:{b['mobile']}">{b['mobile_disp']}</a><br>
+   <a href="mailto:{b['email']}">{b['email']}</a></p>
   </div>
   <div><h2>Υπηρεσίες</h2><ul>{svc_links}</ul></div>
-  <div><h2>Πληροφορίες</h2><ul><li><a href="/pricing/">Τιμές</a></li><li><a href="/about-us/">Ποιοι είμαστε</a></li><li><a href="/faq/">Συχνές ερωτήσεις</a></li><li><a href="/gift-cards/">Gift cards</a></li><li><a href="/book-now/">Online κράτηση</a></li><li><a href="/contact/">Επικοινωνία</a></li></ul></div>
+  <div><h2>Πληροφορίες</h2><ul><li><a href="/pricing/">Τιμές</a></li><li><a href="/about-us/">Η ομάδα</a></li><li><a href="/faq/">Συχνές ερωτήσεις</a></li><li><a href="/gift-cards/">Gift cards</a></li><li><a href="/book-now/">Online κράτηση</a></li><li><a href="/contact/">Επικοινωνία</a></li></ul></div>
   <div><h2>Ακολούθησέ μας</h2><ul>{social}{reviews_link}<li><a href="https://www.instagram.com/onlinefitnessgr/" rel="noopener" target="_blank">Online Fitness GR</a></li></ul></div>
  </div>
- <div class="legal"><span>© {datetime.date.today().year} Training Station Fitness · {esc(BUSINESS['legal_name'])} · Αρ. Γ.Ε.ΜΗ {BUSINESS['gemi']}</span>
- <span><a href="/conditions/">Όροι χρήσης &amp; απόρρητο</a> · <a href="#" data-cookie-settings>Ρυθμίσεις cookies</a></span></div>
+ <div class="giant" aria-hidden="true">Training Station</div>
+ <div class="legal"><span>© {datetime.date.today().year} Training Station Fitness · {esc(b['legal_name'])} · Αρ. Γ.Ε.ΜΗ {b['gemi']}</span>
+ <span><a href="/conditions/">Όροι &amp; απόρρητο</a> · <a href="#" data-cookie-settings>Ρυθμίσεις cookies</a></span></div>
 </div></footer>
 <div class="consent" role="dialog" aria-live="polite" aria-label="Cookies">
- <p>Χρησιμοποιούμε απαραίτητα cookies για τη λειτουργία του site. Με τη συγκατάθεσή σου χρησιμοποιούμε και cookies μέτρησης και διαφήμισης (Google, Meta). <a href="/conditions/#cookies">Μάθε περισσότερα</a></p>
- <div class="btns"><button class="accept">Αποδοχή όλων</button><button class="reject">Μόνο απαραίτητα</button></div>
+ <p>Χρησιμοποιούμε απαραίτητα cookies για να λειτουργεί το site. Με τη συγκατάθεσή σου, και cookies μέτρησης και διαφήμισης (Google, Meta). <a href="/conditions/#cookies">Περισσότερα</a></p>
+ <div class="btns"><button class="reject">Μόνο απαραίτητα</button><button class="accept">Αποδοχή όλων</button></div>
 </div>
 <script src="/assets/js/main.js" defer></script>
 </body>
@@ -368,130 +381,214 @@ def blocks(bl):
         elif t == "ul": out.append("<ul>" + "".join(f"<li>{md(i)}</li>" for i in x) + "</ul>")
     return "\n".join(out)
 
-def faq_html(faqs, heading="Συχνές ερωτήσεις"):
-    items = "".join(f"<details><summary>{esc(q)}</summary><p>{md(a)}</p></details>" for q, a in faqs)
-    return f'<div class="faq"><h2>{esc(heading)}</h2>{items}</div>'
+def faq_items(faqs):
+    return "".join(f"<details><summary>{esc(q)}</summary><p>{md(a)}</p></details>" for q, a in faqs)
 
 def faq_ld(faqs, url):
     return {"@type": "FAQPage", "@id": url + "#faq", "mainEntity": [
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": re.sub(r"\*\*", "", a)}} for q, a in faqs]}
 
-CTA = '''<section class="center"><div class="wrap">
-<h2>Ξεκίνα με μια δωρεάν γνωριμία</h2>
-<p>Κλείσε online ή πάρε μας τηλέφωνο. Συζητάμε τους στόχους σου και σου προτείνουμε το κατάλληλο πρόγραμμα.</p>
-<div class="btns"><a class="btn" href="/book-now/">ΚΛΕΙΣΕ ΡΑΝΤΕΒΟΥ</a><a class="btn ghost" href="tel:+302105767892">210 576 7892</a></div>
+def faq_section(faqs, title="Συχνές ερωτήσεις", intro="Ό,τι μας ρωτάνε πιο συχνά πριν την πρώτη προπόνηση.", more=True):
+    link = f'<p style="margin-top:24px"><a class="btn line" href="/faq/">Όλες οι ερωτήσεις {ARR}</a></p>' if more else ""
+    return f'''<section><div class="wrap faq-grid">
+<div><p class="label">FAQ</p><h2 style="margin-top:12px">{esc(title)}</h2><p style="margin-top:18px;color:var(--muted)">{esc(intro)}</p>{link}</div>
+<div class="faq">{faq_items(faqs)}</div></div></section>'''
+
+def cta_band(title="Ξεκίνα με μια δωρεάν γνωριμία", text="Κλείσε online ή πάρε μας τηλέφωνο. Συζητάμε τους στόχους σου και σου προτείνουμε το κατάλληλο πρόγραμμα."):
+    return f'''<section class="cta-band"><div class="wrap">
+<div><h2>{esc(title)}</h2><p>{esc(text)}</p></div>
+<div class="btns"><a class="btn" href="/book-now/">Κλείσε ραντεβού {ARR}</a><a class="btn line" href="tel:{BUSINESS['phone']}">{BUSINESS['phone_disp']}</a></div>
 </div></section>'''
 
-def map_block(title_tag="h2"):
+def location(h="h2"):
     b = BUSINESS
-    return f'''<section><div class="wrap contact-grid">
-<div><{title_tag}>Βρείτε μας στον χάρτη</{title_tag}>
+    return f'''<section class="ink"><div class="wrap">
+<p class="label">Βρες μας · {esc(b['area'])}</p>
+<{h} class="addr">Παρασκευοπούλου 47<br><span class="blue-txt">Περιστέρι</span></{h}>
+<div class="loc-grid">
+<div class="info">
+ <div><span class="label">Διεύθυνση</span><p>{address_line()}</p></div>
+ <div><span class="label">Ωράριο</span><p>{hours_html()}</p></div>
+ <div><span class="label">Τηλέφωνο</span><p><a href="tel:{b['phone']}">{b['phone_disp']}</a><br><a href="tel:{b['mobile']}">{b['mobile_disp']}</a></p></div>
+ <div><span class="label">E-mail</span><p><a href="mailto:{b['email']}">{b['email']}</a></p></div>
+ <div style="grid-column:1/-1"><span class="label">Πρόσβαση</span><p>Στην πλατεία Μπουρναζίου, κοντά σε στάσεις λεωφορείων. {todo("Πλησιέστερος σταθμός μετρό, στάσεις, στάθμευση","Πρόσθεσε οδηγίες πρόσβασης")}</p></div>
+ <div class="btns" style="grid-column:1/-1"><a class="btn" href="/book-now/">Κλείσε ραντεβού {ARR}</a><a class="btn line" href="{esc(b['maps_url'])}" target="_blank" rel="noopener">Οδηγίες</a></div>
+</div>
 <div class="map-facade"><button class="btn" data-src="{esc(b['maps_embed'])}">Εμφάνιση χάρτη</button></div>
-<p style="margin-top:10px"><a href="{esc(b['maps_url'])}" target="_blank" rel="noopener">Οδηγίες στο Google Maps →</a></p></div>
-<div class="nap"><{title_tag}>Επικοινωνία</{title_tag}>
-<p><strong>Διεύθυνση</strong><br>{address_line()}</p>
-<p><strong>Ωράριο</strong><br>{hours_html()}</p>
-<p><strong>Τηλέφωνο</strong><br><a href="tel:{b['phone']}">{b['phone_disp']}</a> · <a href="tel:{b['mobile']}">{b['mobile_disp']}</a></p>
-<p><strong>E-mail</strong><br><a href="mailto:{b['email']}">{b['email']}</a></p>
-<p><strong>Πρόσβαση</strong><br>Στην πλατεία Μπουρναζίου, κοντά σε στάσεις λεωφορείων. {todo("Πλησιέστερος σταθμός μετρό / στάσεις / στάθμευση","Πρόσθεσε οδηγίες πρόσβασης – βοηθούν local SEO και AI")}</p>
 </div></div></section>'''
 
+def board(title="Οι υπηρεσίες μας", exclude=None, head=True):
+    rows = "".join(f'''<a class="row" href="/{s['slug']}/"><span class="plat">{BOARD[s['slug']][0]}</span><span class="dest">{esc(s['name'])}</span><span class="fmt">{esc(BOARD[s['slug']][1])}</span><span class="st{' on' if 'Online' in BOARD[s['slug']][2] else ''}">{esc(BOARD[s['slug']][2])}</span><span class="go" aria-hidden="true">→</span></a>''' for s in SERVICES if s['slug'] != exclude)
+    return f'''<div class="board">
+<div class="board-head"><span>Training Station · Αναχωρήσεις</span><span class="clock" data-clock>--:--</span></div>
+<div class="board-cols" aria-hidden="true"><span>Πλατ.</span><span>Προορισμός</span><span>Μορφή</span><span>Κατάσταση</span><span></span></div>
+{rows}</div>'''
+
 TESTIMONIALS = [
-    ("Καθαρός και ευχάριστος χώρος για προπόνηση! Ο Μάνος έμπειρος γνώστης και σε εμπνέει για προπόνηση, με ποικιλία προπονήσεων!", "Βασίλης"),
+    ("Ο Μάνος είναι καταπληκτικός! Κάνουμε μαζί προπόνηση εδώ και 2 χρόνια (με χρόνια προβλήματα στη μέση μου) είναι δάσκαλος στο πώς θα προσεγγίσει την κάθε άσκηση! Έχω δει φανταστική διαφορά.", "Γιώργος"),
     ("Τα δυτικά απέκτησαν ένα ΣΩΣΤΟ personal studio. Ο Μάνος φανταστικός στη δουλειά του, πάντα εκεί να σε ενθαρρύνει σε κάθε σου στόχο.", "Ευαγγελία"),
-    ("The ultimate place for training! Manos, the instructor, is amazing and really helped me to regain my confidence and shape in zero time!!!", "Panayiotis"),
-    ("Ο Μάνος είναι καταπληκτικός! Κάνουμε μαζί προπόνηση εδώ και 2 χρόνια (με χρόνια προβλήματα στη μέση μου) είναι δάσκαλος στο πώς θα προσεγγίσει την κάθε άσκηση! Έχω δει φανταστική διαφορά. Σε ευχαριστώ!!", "Γιώργος"),
-    ("Ο χώρος είναι πεντακάθαρος και με πολύ καλό εξοπλισμό. Κεντρικά και κοντά με ΜΜΜ. Όσο για την προπόνηση είναι τοπ. Αν και έχω θέμα με τη μέση μου λόγω μπάσκετ και φοβόμουν να ξεκινήσω, τελικά δικαιώθηκα. Επαγγελματίες, που είναι από πάνω σου και κάνουν φοβερή δουλειά όχι μόνο στο κομμάτι γυμναστικής αλλά και διατροφής.", "Τζαννής"),
-    ("Επιτέλους βρήκα έναν γυμναστή καταρτισμένο, με επιστημονικές γνώσεις, που προσέχει τους ασκούμενούς του στο έπακρο! Μπράβο για όλα!!! Ο χώρος καταπληκτικός!!!", "Μαρία"),
+    ("Καθαρός και ευχάριστος χώρος για προπόνηση! Ο Μάνος έμπειρος γνώστης και σε εμπνέει για προπόνηση, με ποικιλία προπονήσεων!", "Βασίλης"),
+    ("Ο χώρος είναι πεντακάθαρος και με πολύ καλό εξοπλισμό. Κεντρικά και κοντά με ΜΜΜ. Αν και έχω θέμα με τη μέση μου λόγω μπάσκετ και φοβόμουν να ξεκινήσω, τελικά δικαιώθηκα.", "Τζαννής"),
+    ("Επιτέλους βρήκα έναν γυμναστή καταρτισμένο, με επιστημονικές γνώσεις, που προσέχει τους ασκούμενούς του στο έπακρο!", "Μαρία"),
+    ("The ultimate place for training! Manos, the instructor, is amazing and really helped me to regain my confidence and shape in zero time!", "Panayiotis"),
 ]
 
 def testimonials():
-    q = "".join(f'<blockquote><div class="stars" aria-label="5 στα 5">★★★★★</div><p>{esc(t)}</p><cite>— {esc(n)}</cite></blockquote>' for t, n in TESTIMONIALS)
+    q = "".join(f'<blockquote class="quote{" feature" if i == 0 else ""}"><div class="stars" aria-label="5 στα 5">★★★★★</div><p>{esc(t)}</p><cite>{esc(n)}</cite></blockquote>' for i, (t, n) in enumerate(TESTIMONIALS))
     gb = BUSINESS["google_business"]
-    link = f'<a href="{gb}" target="_blank" rel="noopener">Δες όλες τις κριτικές στο Google →</a>' if gb else todo("Δες όλες τις κριτικές στο Google → (link)", "Link του Google Business Profile")
-    return f'<section class="blue"><div class="wrap"><h2 class="center">Τι λένε οι ασκούμενοί μας</h2><div class="quotes">{q}</div><p class="center" style="margin-top:24px">{link}</p></div></section>'
+    link = f'<a class="btn line" href="{gb}" target="_blank" rel="noopener">Κριτικές στο Google {ARR}</a>' if gb else todo("Κουμπί «Κριτικές στο Google» (θέλει link)", "Link του Google Business Profile")
+    return f'''<section><div class="wrap">
+<div class="head-row"><div><p class="label">Κριτικές</p><h2 style="margin-top:12px">Τι λένε όσοι<br>προπονούνται εδώ</h2></div><div>{link}</div></div>
+<div class="quotes">{q}</div></div></section>'''
+
+STEPS = '''<section><div class="wrap">
+<div class="head-row"><div><p class="label">Πώς ξεκινάς</p><h2 style="margin-top:12px">Από την πρώτη γνωριμία<br>στο πρώτο αποτέλεσμα</h2></div>
+<p>Κάθε πρόγραμμα ξεκινά από εσένα: τους στόχους, το επίπεδο και το ιστορικό σου.</p></div>
+<div class="steps">
+<div class="step"><h3>Δωρεάν γνωριμία</h3><p>Μια σύντομη συνάντηση για να γνωριστούμε και να ακούσουμε τι θέλεις να πετύχεις.</p></div>
+<div class="step"><h3>Αξιολόγηση</h3><p>Προπονητική και διατροφική αξιολόγηση, με προσοχή σε τραυματισμούς και ιστορικό.</p></div>
+<div class="step"><h3>Το πρόγραμμά σου</h3><p>Σχεδιάζουμε προπόνηση και διατροφή μόνο για σένα, ατομικά ή σε ομάδα έως 3 ατόμων.</p></div>
+<div class="step"><h3>Πρόοδος</h3><p>Παρακολουθούμε κάθε βήμα και προσαρμόζουμε το πρόγραμμα όσο δυναμώνεις.</p></div>
+</div></div></section>'''
+
+def phero(eyebrow, h1, lead="", badge=None):
+    badge_html = f'<div class="badge"><img src="/assets/img/{badge}" alt="" width="96" height="96"></div>' if badge else ""
+    lead_html = f'<p class="lead">{lead}</p>' if lead else ""
+    return f'''<section class="ink phero"><div class="wrap">{{CRUMBS}}
+<div class="phero-grid"><div><p class="label">{esc(eyebrow)}</p><h1 style="margin-top:14px">{h1}</h1>{lead_html}</div>{badge_html}</div>
+</div></section>'''
 
 # ---------------------------------------------------------------- σελίδες
 pages = []
 
-# Αρχική
 home_faq = [
     ("Πού βρίσκεται το Training Station Fitness;", "Στην οδό Παρασκευοπούλου 47, στην πλατεία Μπουρναζίου στο Περιστέρι (Δυτική Αθήνα)."),
     ("Τι υπηρεσίες προσφέρετε;", "Ατομικό personal training, small group training για 2–3 άτομα, Pilates Reformer, άσκηση για αποκατάσταση τραυματισμών, προετοιμασία για τα αθλήματα Αστυνομίας και Στρατού, online coaching και διατροφή με Διαιτολόγο."),
     ("Χρειάζεται ραντεβού;", "Ναι, όλες οι συνεδρίες γίνονται κατόπιν ραντεβού. Κλείνεις online από τη σελίδα «Κράτηση» ή στο 210 576 7892."),
     ("Υπάρχει δωρεάν δοκιμαστική συνάντηση;", "Ναι, μπορείς να κλείσεις μια δωρεάν ενημερωτική συνάντηση γνωριμίας για να συζητήσουμε τους στόχους σου."),
 ]
-svc_cards = "".join(f'''<article class="card"><img class="icon" src="/assets/img/{s["icon"]}" alt="" width="84" height="84" loading="lazy">
-<h3><a href="/{s["slug"]}/" style="color:inherit;text-decoration:none">{esc(s["name"])}</a></h3><p>{esc(s["desc"].split(".")[0])}.</p><a class="more" href="/{s["slug"]}/">Μάθε περισσότερα →</a></article>''' for s in SERVICES)
-home_body = f'''
-<section style="padding-top:0"><div class="wrap grid-2">
-<div><h2>Wellness place στην πλατεία Μπουρναζίου</h2>
-<p>Στον πλήρως εξοπλισμένο μας χώρο στην πλατεία <strong>Μπουρναζίου στο Περιστέρι</strong>, μπορείτε να κάνετε <strong>ατομικές προπονήσεις</strong>, <strong>ομαδικές προπονήσεις έως 3 άτομα</strong>, <strong>Pilates Reformer</strong>, <strong>online προπονητική</strong>, καθώς και <strong>άσκηση για αποκατάσταση τραυματισμών</strong>. Σας προσφέρουμε προπονητική και διατροφική αξιολόγηση και μελετάμε με λεπτομέρεια την κάθε σας ανάγκη, δημιουργώντας το καταλληλότερο πρόγραμμα προπόνησης και διατροφής.</p>
-<div class="btns"><a class="btn" href="/book-now/">BOOK NOW!</a><a class="btn ghost" href="/pricing/">Δες τιμές</a></div></div>
-<img src="/assets/img/eisodos-training-station.webp" width="900" height="720" alt="Η είσοδος του Training Station Fitness στο Περιστέρι με το λογότυπο στον καθρέφτη" fetchpriority="high">
+
+home_hero = f'''<section class="ink hero"><div class="wrap">
+<div class="hero-grid">
+<div>
+<p class="label">Personal training studio · Πλατεία Μπουρναζίου</p>
+<h1 style="margin-top:18px"><span class="thin">Training Station Fitness</span>Γυμναστήριο<br>στο <span class="blue-txt">Περιστέρι</span></h1>
+<p class="lead">Η γυμναστική σου μόλις απέκτησε ενδιαφέρον. Εξατομικευμένη προπόνηση, Pilates Reformer και διατροφή, με Καθηγητές Φυσικής Αγωγής και Διαιτολόγο.</p>
+<div class="btns"><a class="btn" href="/book-now/">Κλείσε δωρεάν γνωριμία {ARR}</a><a class="btn line" href="/services/">Δες τις υπηρεσίες</a></div>
 </div>
-<div class="wrap facts">
-<div><strong>Έως 3 άτομα</strong>ανά προπόνηση</div><div><strong>Καθηγητές Φ.Α.</strong>πτυχιούχοι ΤΕΦΑΑ</div><div><strong>Διαιτολόγος</strong>στην ομάδα</div><div><strong>Δωρεάν</strong>γνωριμία</div>
+<div class="pins">
+<img class="p1" src="/assets/img/eleuthera-vari-bournazi.webp" width="900" height="720" alt="Rack, ιμάντες TRX και μπάρα Olympic στον χώρο ελεύθερων βαρών του Training Station Fitness" fetchpriority="high">
+<img class="p2" src="/assets/img/aerobia-mixanimata-bournazi.webp" width="900" height="720" alt="Διάδρομος, αλτήρες και πολυόργανο τροχαλίας στο γυμναστήριο στο Περιστέρι">
+</div>
+</div>
+<div class="facts">
+<div><strong>Έως 3</strong><span>άτομα σε κάθε προπόνηση</span></div>
+<div><strong>ΤΕΦΑΑ</strong><span>πτυχιούχοι Καθηγητές Φ.Α.</span></div>
+<div><strong>Διαιτολόγος</strong><span>στην ίδια ομάδα</span></div>
+<div><strong>Δωρεάν</strong><span>η πρώτη γνωριμία</span></div>
+</div>
+</div></section>'''
+
+home_body = f'''
+<section><div class="wrap split">
+<div class="stack">
+<p class="label">Wellness place</p>
+<h2>Ένας χώρος φτιαγμένος για να προπονείσαι σωστά</h2>
+<p class="big">Στον πλήρως εξοπλισμένο μας χώρο στην πλατεία Μπουρναζίου κάνεις <strong>ατομικές προπονήσεις</strong>, <strong>ομαδικές έως 3 άτομα</strong>, <strong>Pilates Reformer</strong>, <strong>online προπονητική</strong> και <strong>άσκηση για αποκατάσταση τραυματισμών</strong>.</p>
+<p style="color:var(--muted)">Ξεκινάμε με προπονητική και διατροφική αξιολόγηση και μελετάμε με λεπτομέρεια κάθε σου ανάγκη, για να φτιάξουμε το καταλληλότερο πρόγραμμα προπόνησης και διατροφής.</p>
+<div class="btns" style="margin-top:8px"><a class="btn" href="/book-now/">Book now {ARR}</a><a class="btn line" href="/pricing/">Τιμές</a></div>
+</div>
+<img class="pin-one" src="/assets/img/eisodos-training-station.webp" width="900" height="720" alt="Η είσοδος του Training Station Fitness με το λογότυπο στον στρογγυλό καθρέφτη" loading="lazy">
 </div></section>
-<section style="padding-top:0"><div class="wrap photos">
-<img src="/assets/img/eleuthera-vari-bournazi.webp" width="900" height="720" alt="Rack, ιμάντες TRX και μπάρα Olympic στον χώρο ελεύθερων βαρών του Training Station Fitness" loading="lazy">
-<img src="/assets/img/aerobia-mixanimata-bournazi.webp" width="900" height="720" alt="Διάδρομος, αλτήρες και πολυόργανο τροχαλίας στο γυμναστήριο στο Περιστέρι" loading="lazy">
-<img src="/assets/img/gift-card.webp" width="900" height="638" alt="Δωροκάρτα (gift card) Training Station Fitness" loading="lazy">
+<section class="ink"><div class="wrap">
+<div class="head-row"><div><p class="label">Υπηρεσίες</p><h2 style="margin-top:12px">Διάλεξε<br>προορισμό</h2></div>
+<p>Επτά προγράμματα, ένα κοινό σημείο: Καθηγητές Φυσικής Αγωγής που σχεδιάζουν την προπόνηση γύρω από εσένα.</p></div>
+{board()}
 </div></section>
-<section><div class="wrap"><h2 class="center">Οι υπηρεσίες μας</h2><div class="grid-3">{svc_cards}</div></div></section>
-<section><div class="wrap grid-2">
-<div><h2>Ποιοι είμαστε</h2>
-<p>Ονομάζομαι <strong>Μάνος Τσαγκατάκης</strong>. Είμαι απόφοιτος του <strong>ΤΕΦΑΑ του Δημοκρίτειου Πανεπιστημίου Θράκης</strong>, με ειδικότητα στην κολύμβηση, και μεταπτυχιακός φοιτητής του <strong>Χαροκόπειου Πανεπιστημίου</strong> στην Εφαρμοσμένη Διατροφή &amp; Διατροφολογία (κατεύθυνση Διατροφή &amp; Άσκηση). Από το 2020 διδάσκω <strong>Σωματική Αγωγή στη Σχολή Αξιωματικών της Ελληνικής Αστυνομίας (ΣΑΕΑ)</strong>.</p>
-<p>Η πολυετής εμπειρία μου στις εξατομικευμένες προπονήσεις με ώθησε να δημιουργήσω έναν χώρο όπου ο κάθε ασκούμενος, με <strong>σωστή καθοδήγηση</strong>, <strong>επιστημονική γνώση</strong> και <strong>ασφάλεια</strong>, πετυχαίνει κάθε στόχο.</p>
-<a class="btn ghost" href="/about-us/">Γνώρισε την ομάδα</a></div>
-<img src="/assets/img/manos-tsagkatakis.webp" width="768" height="768" alt="Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής και ιδρυτής του Training Station Fitness" loading="lazy" style="border-radius:14px;max-width:420px;justify-self:center">
-</div></section>
+{STEPS}
+<section class="ink"><div class="wrap coach">
+<img src="/assets/img/manos-tsagkatakis.webp" width="768" height="768" alt="Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής και ιδρυτής του Training Station Fitness" loading="lazy">
+<div>
+<p class="label">Ο προπονητής σου</p>
+<h2 style="margin-top:12px">Μάνος<br>Τσαγκατάκης</h2>
+<p style="margin-top:22px;color:#c9d2db;font-size:1.1rem">Η πολυετής εμπειρία μου στις εξατομικευμένες προπονήσεις με ώθησε να δημιουργήσω έναν χώρο όπου κάθε ασκούμενος, με σωστή καθοδήγηση, επιστημονική γνώση και ασφάλεια, πετυχαίνει κάθε στόχο.</p>
+<ul class="creds">
+<li><b>Πτυχίο</b><span>ΤΕΦΑΑ, Δημοκρίτειο Πανεπιστήμιο Θράκης · ειδικότητα κολύμβηση</span></li>
+<li><b>Μεταπτυχιακό</b><span>Χαροκόπειο Πανεπιστήμιο · Εφαρμοσμένη Διατροφή, Διατροφή &amp; Άσκηση</span></li>
+<li><b>Από το 2020</b><span>Διδάσκει Σωματική Αγωγή στη Σχολή Αξιωματικών της Ελληνικής Αστυνομίας</span></li>
+<li><b>Διατροφή</b><span>Μελίνα Τσαγκατάκη, Διαιτολόγος-Διατροφολόγος (Χαροκόπειο, MSc Κλινική Διατροφή)</span></li>
+</ul>
+<a class="btn line" href="/about-us/">Γνώρισε την ομάδα {ARR}</a>
+</div></div></section>
 {testimonials()}
-<section><div class="wrap content" style="margin:0 auto">{faq_html(home_faq)}<p><a href="/faq/">Όλες οι συχνές ερωτήσεις →</a></p></div></section>
-{map_block()}
+{cta_band()}
+{faq_section(home_faq)}
+{location()}
 '''
 pages.append(page("/", "Γυμναστήριο Περιστέρι – Personal Training & Pilates | Training Station",
     "Personal training, Pilates Reformer, group 2–3 ατόμων & αποκατάσταση τραυματισμών στην πλ. Μπουρναζίου, Περιστέρι. Καθηγητές Φ.Α. & Διαιτολόγος.",
-    '<section class="hero"><div class="wrap"><p class="eyebrow">Personal training studio · Περιστέρι</p><h1>Training Station Fitness – Γυμναστήριο στο Περιστέρι</h1><p class="lead">Η γυμναστική σου μόλις απέκτησε ενδιαφέρον! Εξατομικευμένη προπόνηση, Pilates Reformer και διατροφή στην πλατεία Μπουρναζίου.</p><div class="btns" style="justify-content:center"><a class="btn" href="/book-now/">ΚΛΕΙΣΕ ΡΑΝΤΕΒΟΥ</a><a class="btn ghost" href="tel:+302105767892">210 576 7892</a></div></div></section>',
-    home_body, extra_ld=[faq_ld(home_faq, SITE + "/")]))
+    home_hero, home_body, extra_ld=[faq_ld(home_faq, SITE + "/")]))
 
 # Σελίδες υπηρεσιών
 for s in SERVICES:
     url = f"{SITE}/{s['slug']}/"
+    plat, fmt, status, tag = BOARD[s["slug"]]
     svc_ld = {"@type": "Service", "@id": url + "#service", "name": s["name"], "serviceType": s["stype"], "url": url,
               "description": s["desc"], "provider": {"@id": SITE + "/#gym"},
               "areaServed": {"@type": "City", "name": "Περιστέρι"} if not s.get("online") else [{"@type": "City", "name": "Περιστέρι"}, {"@type": "Country", "name": "Ελλάδα"}]}
-    head = f'''<section style="padding-bottom:20px"><div class="wrap service-head"><div><h1>{esc(s["h1"])}</h1></div>
-<img src="/assets/img/{s["icon"]}" alt="" width="220" height="220"></div></section>'''
-    body = f'''<section style="padding-top:0"><div class="wrap content">{blocks(s["body"])}
-<p><a class="btn" href="/book-now/">BOOK NOW</a></p>
-{faq_html(s["faq"])}
-<p>Δες επίσης: {" · ".join(f'<a href="/{o["slug"]}/">{esc(o["name"])}</a>' for o in SERVICES if o is not s)} · <a href="/pricing/">Τιμές</a></p>
-</div></section>{map_block()}'''
+    head = phero(f"Πλατφόρμα {plat} · {s['name']}", esc(s["h1"]), esc(s["desc"]), s["icon"])
+    others = "".join(f'<a href="/{o["slug"]}/">{esc(o["name"])}</a>' for o in SERVICES if o is not s)
+    body = f'''<section><div class="wrap svc">
+<article class="prose">{blocks(s["body"])}</article>
+<aside class="aside">
+<p class="label">Πλατφόρμα {plat}</p>
+<h2>{esc(s["name"])}</h2>
+<dl><div><dt>Μορφή</dt><dd>{esc(fmt)}</dd></div><div><dt>Πού</dt><dd>Παρασκευοπούλου 47, Περιστέρι</dd></div><div><dt>Πώς ξεκινάς</dt><dd>Δωρεάν γνωριμία &amp; αξιολόγηση</dd></div></dl>
+<a class="btn" href="/book-now/">Κλείσε ραντεβού {ARR}</a>
+<a class="btn line" href="/pricing/">Δες τιμές</a>
+<p style="color:var(--on-ink-2);font-size:.95rem">ή κάλεσε στο <a href="tel:{BUSINESS['phone']}">{BUSINESS['phone_disp']}</a></p>
+</aside>
+</div></section>
+{faq_section(s["faq"], "Ερωτήσεις για " + s["name"], tag, more=True)}
+<section style="padding-top:0"><div class="wrap"><p class="label">Δες επίσης</p><div class="see-also">{others}<a href="/pricing/">Τιμές</a></div></div></section>
+{cta_band()}
+{location()}'''
     pages.append(page(f"/{s['slug']}/", s["title"], s["desc"], head, body,
                       crumbs=[("Υπηρεσίες", "/services/"), (s["name"], f"/{s['slug']}/")],
                       extra_ld=[svc_ld, faq_ld(s["faq"], url)]))
 
 # Υπηρεσίες
+svc_cards = "".join(f'''<a class="pcard" href="/{s["slug"]}/" style="text-decoration:none;color:inherit">
+<img src="/assets/img/{s["icon"]}" alt="" width="64" height="64" loading="lazy" style="width:64px;height:64px">
+<p class="label">Πλατφόρμα {BOARD[s["slug"]][0]}</p><h3>{esc(s["name"])}</h3><p style="color:var(--muted)">{esc(BOARD[s["slug"]][3])}</p>
+<span style="margin-top:auto;font-weight:600;color:var(--blue-2)">Μάθε περισσότερα →</span></a>''' for s in SERVICES)
 pages.append(page("/services/", "Υπηρεσίες Γυμναστηρίου στο Περιστέρι | Training Station Fitness",
     "Personal training, Pilates Reformer, group 2–3 ατόμων, online coaching, αποκατάσταση τραυματισμών, Forces training και διατροφή στο Περιστέρι.",
-    '<section class="hero"><div class="wrap"><h1>Υπηρεσίες γυμναστηρίου στο Περιστέρι</h1><p class="lead">Κάθε πρόγραμμα ξεκινά με αξιολόγηση και σχεδιάζεται από Καθηγητές Φυσικής Αγωγής για τους δικούς σου στόχους.</p></div></section>',
-    f'<section style="padding-top:0"><div class="wrap"><div class="grid-3">{svc_cards}</div></div></section>{CTA}',
+    phero("Υπηρεσίες", "Υπηρεσίες γυμναστηρίου<br>στο <span class=\"blue-txt\">Περιστέρι</span>", "Κάθε πρόγραμμα ξεκινά με αξιολόγηση και σχεδιάζεται από Καθηγητές Φυσικής Αγωγής για τους δικούς σου στόχους."),
+    f'''<section class="ink" style="padding-top:0"><div class="wrap">{board()}</div></section>
+<section><div class="wrap"><div class="cards">{svc_cards}</div></div></section>{STEPS}{cta_band()}''',
     crumbs=[("Υπηρεσίες", "/services/")],
     extra_ld=[{"@type": "ItemList", "itemListElement": [{"@type": "ListItem", "position": i + 1, "url": f"{SITE}/{s['slug']}/", "name": s["name"]} for i, s in enumerate(SERVICES)]}]))
 
 # Τιμές
-rows = "".join(f"<tr><td>{esc(a)}</td><td>{esc(b)}</td><td><strong>{esc(c) if c else todo('XX €','Βάλε την τιμή')}</strong></td><td>{esc(d)}</td></tr>" for a, b, c, d in PRICES)
-offers = [{"@type": "Offer", "name": f"{a} – {b}", "price": "0" if c == "Δωρεάν" else re.sub(r"[^\d.,]", "", c).replace(",", "."), "priceCurrency": "EUR", "seller": {"@id": SITE + "/#gym"}} for a, b, c, d in PRICES if c]
+groups = {}
+for a, b_, c, d in PRICES: groups.setdefault(a, []).append((b_, c, d))
+pcards = ""
+for name, rows in groups.items():
+    free = any(c == "Δωρεάν" for _, c, _ in rows)
+    rs = "".join(f'<div class="r"><span>{esc(b_)}</span><b>{esc(c) if c else todo("XX €", "Βάλε την τιμή")}</b></div>' for b_, c, _ in rows)
+    notes = " ".join(esc(d) for _, _, d in rows if d)
+    pcards += f'<div class="pcard{" free" if free else ""}"><h3>{esc(name)}</h3><div class="rows">{rs}</div>{f"<p class=note>{notes}</p>" if notes else ""}{f"<a class=btn style=background:#fff;color:var(--blue-2);border-color:#fff;align-self:start href=/book-now/>Κλείσε τώρα {ARR}</a>" if free else ""}</div>'
+offers = [{"@type": "Offer", "name": f"{a} – {b_}", "price": "0" if c == "Δωρεάν" else re.sub(r"[^\d.,]", "", c).replace(",", "."), "priceCurrency": "EUR", "seller": {"@id": SITE + "/#gym"}} for a, b_, c, d in PRICES if c]
 price_faq = [("Υπάρχει δωρεάν δοκιμή;", "Ναι, η πρώτη ενημερωτική συνάντηση γνωριμίας είναι δωρεάν."),
              ("Πώς πληρώνω;", "Μπορείς να πληρώσεις online κατά την κράτηση ή στον χώρο μας."),
              ("Ισχύουν οι τιμές για gift cards;", "Ναι, μπορείς να αγοράσεις οποιοδήποτε πακέτο ως δωροκάρτα.")]
 pages.append(page("/pricing/", "Τιμές Personal Training & Pilates Περιστέρι | Training Station",
     "Τιμές και πακέτα για personal training, Pilates Reformer, group 2–3 ατόμων, online coaching και διατροφή στο Training Station Fitness, Περιστέρι. Δωρεάν γνωριμία.",
-    '<section class="hero"><div class="wrap"><h1>Τιμές &amp; πακέτα</h1><p class="lead">Ξεκάθαρες τιμές, χωρίς δεσμεύσεις. Η πρώτη συνάντηση γνωριμίας είναι δωρεάν.</p></div></section>',
-    f'''<section style="padding-top:0"><div class="wrap"><div class="table-scroll"><table class="price-table"><thead><tr><th>Υπηρεσία</th><th>Πακέτο</th><th>Τιμή</th><th>Σημείωση</th></tr></thead><tbody>{rows}</tbody></table></div>
-<p style="margin-top:14px;font-size:15px">Οι τιμές περιλαμβάνουν ΦΠΑ. Τελευταία ενημέρωση: {TODAY}.</p>
-<div class="content">{faq_html(price_faq)}</div></div></section>{CTA}''',
+    phero("Τιμές", "Τιμές &amp; πακέτα", "Ξεκάθαρες τιμές, χωρίς δεσμεύσεις. Η πρώτη συνάντηση γνωριμίας είναι δωρεάν."),
+    f'''<section><div class="wrap"><div class="cards">{pcards}</div>
+<p style="margin-top:22px;font-size:.92rem;color:var(--muted)">Οι τιμές περιλαμβάνουν ΦΠΑ. Τελευταία ενημέρωση: {TODAY}.</p></div></section>
+{faq_section(price_faq, "Τιμές & πληρωμές", "Πρακτικές απαντήσεις πριν κλείσεις.")}{cta_band()}''',
     crumbs=[("Τιμές", "/pricing/")], extra_ld=([{"@type": "OfferCatalog", "name": "Τιμοκατάλογος", "itemListElement": offers}] + [faq_ld(price_faq, SITE + "/pricing/")])))
 
 # FAQ
@@ -499,93 +596,100 @@ all_faq = home_faq + [q for s in SERVICES for q in s["faq"]] + price_faq
 seen, uniq = set(), []
 for q in all_faq:
     if q[0] not in seen: seen.add(q[0]); uniq.append(q)
-faq_sections = faq_html(home_faq, "Γενικά") + "".join(faq_html(s["faq"], s["name"]) for s in SERVICES) + faq_html(price_faq, "Τιμές & πληρωμές")
+faq_blocks = f"<h3>Γενικά</h3>{faq_items(home_faq)}" + "".join(f"<h3>{esc(s['name'])}</h3>{faq_items(s['faq'])}" for s in SERVICES) + f"<h3>Τιμές &amp; πληρωμές</h3>{faq_items(price_faq)}"
 pages.append(page("/faq/", "Συχνές Ερωτήσεις | Training Station Fitness Περιστέρι",
     "Απαντήσεις για personal training, Pilates Reformer, αποκατάσταση τραυματισμών, αθλήματα Αστυνομίας, διατροφή, τιμές και κρατήσεις στο Training Station.",
-    '<section class="hero"><div class="wrap"><h1>Συχνές ερωτήσεις</h1></div></section>',
-    f'<section style="padding-top:0"><div class="wrap content" style="margin:0 auto">{faq_sections}</div></section>{CTA}',
+    phero("FAQ", "Συχνές ερωτήσεις", "Δεν βρίσκεις αυτό που ψάχνεις; Πάρε μας στο 210 576 7892."),
+    f'''<section><div class="wrap faq-grid"><div><p class="label">Ενότητες</p><div class="see-also">{"".join(f'<a href="/{s["slug"]}/">{esc(s["name"])}</a>' for s in SERVICES)}</div></div>
+<div class="faq">{faq_blocks}</div></div></section>{cta_band()}''',
     crumbs=[("Συχνές ερωτήσεις", "/faq/")], extra_ld=[faq_ld(uniq, SITE + "/faq/")]))
 
-# Ποιοι είμαστε
+# Η ομάδα
 pages.append(page("/about-us/", "Ποιοι Είμαστε – Μάνος & Μελίνα Τσαγκατάκη | Training Station Fitness",
-    "Γνώρισε την ομάδα του Training Station Fitness στο Περιστέρι: Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής (ΤΕΦΑΑ, ΣΑΕΑ) και Μελίνα Τσαγκατάκη, Διαιτολόγος-Διατροφολόγος.",
-    '<section class="hero"><div class="wrap"><h1>Ποιοι είμαστε</h1><p class="lead">Επιστημονική γνώση, σωστή καθοδήγηση και ασφάλεια, σε έναν φιλικό χώρο στην πλατεία Μπουρναζίου.</p></div></section>',
-    f'''<section style="padding-top:0"><div class="wrap people">
-<article class="card"><img src="/assets/img/manos-tsagkatakis.webp" width="768" height="768" alt="Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής" loading="lazy">
-<h2 style="margin-top:18px">Μάνος Τσαγκατάκης</h2><p><strong>Καθηγητής Φυσικής Αγωγής – Ιδρυτής</strong></p>
-<ul><li>Πτυχίο ΤΕΦΑΑ, Δημοκρίτειο Πανεπιστήμιο Θράκης (ειδικότητα κολύμβηση)</li><li>Μεταπτυχιακός φοιτητής, Χαροκόπειο Πανεπιστήμιο – Εφαρμοσμένη Διατροφή &amp; Διατροφολογία (Διατροφή &amp; Άσκηση)</li><li>Από το 2020 διδάσκει Σωματική Αγωγή στη Σχολή Αξιωματικών της Ελληνικής Αστυνομίας (ΣΑΕΑ)</li></ul>
-<p>Η πολυετής εμπειρία μου στον χώρο της άσκησης και των εξατομικευμένων προπονήσεων με ώθησε να δημιουργήσω έναν χώρο όπου ο κάθε ασκούμενος, με σωστή καθοδήγηση, επιστημονική γνώση και ασφάλεια, πετυχαίνει κάθε στόχο.</p></article>
-<article class="card"><img src="/assets/img/melina-tsagkataki.webp" width="900" height="900" alt="Μελίνα Τσαγκατάκη, Διαιτολόγος-Διατροφολόγος" loading="lazy">
-<h2 style="margin-top:18px">Μελίνα Τσαγκατάκη</h2><p><strong>Διαιτολόγος – Διατροφολόγος</strong></p>
-<ul><li>Πτυχίο Διαιτολογίας-Διατροφολογίας, Χαροκόπειο Πανεπιστήμιο</li><li>Μεταπτυχιακό στην Εφαρμοσμένη Διαιτολογία και Διατροφή, κατεύθυνση Κλινική Διατροφή</li></ul>
-<p>Υπεύθυνη για τις <a href="/dietetics-and-nutrition/">διατροφικές υπηρεσίες</a>, στον χώρο μας ή online.</p></article>
+    "Γνώρισε την ομάδα του Training Station Fitness στο Περιστέρι: Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής (ΤΕΦΑΑ, ΣΑΕΑ) και Μελίνα Τσαγκατάκη, Διαιτολόγος.",
+    phero("Η ομάδα", "Ποιοι είμαστε", "Επιστημονική γνώση, σωστή καθοδήγηση και ασφάλεια, σε έναν φιλικό χώρο στην πλατεία Μπουρναζίου."),
+    f'''<section><div class="wrap people">
+<article class="person"><img src="/assets/img/manos-tsagkatakis.webp" width="768" height="768" alt="Μάνος Τσαγκατάκης, Καθηγητής Φυσικής Αγωγής" loading="lazy">
+<div class="body"><p class="label">Καθηγητής Φυσικής Αγωγής · Ιδρυτής</p><h2 style="margin-top:10px">Μάνος Τσαγκατάκης</h2>
+<div class="prose" style="margin-top:6px"><ul><li>Πτυχίο ΤΕΦΑΑ, Δημοκρίτειο Πανεπιστήμιο Θράκης (ειδικότητα κολύμβηση)</li><li>Μεταπτυχιακός φοιτητής, Χαροκόπειο Πανεπιστήμιο · Εφαρμοσμένη Διατροφή &amp; Διατροφολογία (Διατροφή &amp; Άσκηση)</li><li>Από το 2020 διδάσκει Σωματική Αγωγή στη Σχολή Αξιωματικών της Ελληνικής Αστυνομίας (ΣΑΕΑ)</li></ul>
+<p>Η πολυετής εμπειρία μου στον χώρο της άσκησης και των εξατομικευμένων προπονήσεων με ώθησε να δημιουργήσω έναν χώρο όπου ο κάθε ασκούμενος, με σωστή καθοδήγηση, επιστημονική γνώση και ασφάλεια, πετυχαίνει κάθε στόχο.</p></div></div></article>
+<article class="person"><img src="/assets/img/melina-tsagkataki.webp" width="900" height="900" alt="Μελίνα Τσαγκατάκη, Διαιτολόγος-Διατροφολόγος" loading="lazy">
+<div class="body"><p class="label">Διαιτολόγος · Διατροφολόγος</p><h2 style="margin-top:10px">Μελίνα Τσαγκατάκη</h2>
+<div class="prose" style="margin-top:6px"><ul><li>Πτυχίο Διαιτολογίας-Διατροφολογίας, Χαροκόπειο Πανεπιστήμιο</li><li>Μεταπτυχιακό στην Εφαρμοσμένη Διαιτολογία και Διατροφή, κατεύθυνση Κλινική Διατροφή</li></ul>
+<p>Υπεύθυνη για τις <a href="/dietetics-and-nutrition/">διατροφικές υπηρεσίες</a>, στον χώρο μας ή online.</p></div></div></article>
 </div></section>
-<section style="padding-top:0"><div class="wrap content"><h2>Ο χώρος μας</h2><p>Στον χώρο μας στην πλατεία <strong>Μπουρναζίου στο Περιστέρι</strong>, μπορείτε να κάνετε ατομικές προπονήσεις, ομαδικές προπονήσεις έως 3 άτομα, Pilates Reformer, online προπονητική, καθώς και άσκηση για αποκατάσταση τραυματισμών. Σας προσφέρουμε προπονητική και διατροφική αξιολόγηση και μελετάμε με λεπτομέρεια την κάθε σας ανάγκη.</p></div>
-<div class="wrap photos"><img src="/assets/img/eisodos-training-station.webp" width="900" height="720" alt="Είσοδος του Training Station Fitness" loading="lazy"><img src="/assets/img/eleuthera-vari-bournazi.webp" width="900" height="720" alt="Χώρος ελεύθερων βαρών με rack και TRX" loading="lazy"><img src="/assets/img/aerobia-mixanimata-bournazi.webp" width="900" height="720" alt="Διάδρομος και αλτήρες στο γυμναστήριο" loading="lazy"></div></section>
-{testimonials()}{CTA}''',
-    crumbs=[("Ποιοι είμαστε", "/about-us/")], og_image="manos-tsagkatakis.webp",
+<section style="padding-top:0"><div class="wrap">
+<div class="head-row"><div><p class="label">Ο χώρος</p><h2 style="margin-top:12px">Πλατεία Μπουρναζίου</h2></div>
+<p>Ατομικές προπονήσεις, ομάδες έως 3 ατόμων, Pilates Reformer, online προπονητική και άσκηση για αποκατάσταση τραυματισμών, σε έναν καθαρό, πλήρως εξοπλισμένο χώρο.</p></div>
+<div class="pinboard"><img src="/assets/img/eisodos-training-station.webp" width="900" height="720" alt="Είσοδος του Training Station Fitness" loading="lazy"><img src="/assets/img/eleuthera-vari-bournazi.webp" width="900" height="720" alt="Χώρος ελεύθερων βαρών με rack και TRX" loading="lazy"><img src="/assets/img/aerobia-mixanimata-bournazi.webp" width="900" height="720" alt="Διάδρομος και αλτήρες στο γυμναστήριο" loading="lazy"></div>
+</div></section>
+{testimonials()}{cta_band()}''',
+    crumbs=[("Η ομάδα", "/about-us/")], og_image="manos-tsagkatakis.webp",
     extra_ld=people_nodes() + [{"@type": "AboutPage", "@id": SITE + "/about-us/#about", "url": SITE + "/about-us/", "mainEntity": {"@id": SITE + "/#gym"}}]))
 
 # Επικοινωνία
 pages.append(page("/contact/", "Επικοινωνία – Παρασκευοπούλου 47, Περιστέρι | Training Station Fitness",
     "Επικοινώνησε με το Training Station Fitness: Παρασκευοπούλου 47, πλατεία Μπουρναζίου, Περιστέρι. Τηλ. 210 576 7892 · 694 619 4809 · info@trainingstationfitness.com.",
-    '<section class="hero"><div class="wrap"><h1>Επικοινωνία</h1><p class="lead">Συνεδρίες και ενημέρωση πραγματοποιούνται κατόπιν ραντεβού.</p></div></section>',
-    f'''{map_block("h2")}
-<section style="padding-top:0"><div class="wrap content" style="margin:0 auto"><h2>Στείλε μας μήνυμα</h2>
-<form class="contact" method="post" action="#" onsubmit="alert('Προεπισκόπηση: εδώ συνδέεται η φόρμα του WordPress (π.χ. Contact Form 7).');return false">
-<label for="f-name">Ονοματεπώνυμο *</label><input id="f-name" name="name" required autocomplete="name">
-<label for="f-mail">Email *</label><input id="f-mail" name="email" type="email" required autocomplete="email">
-<label for="f-tel">Τηλέφωνο *</label><input id="f-tel" name="tel" type="tel" required autocomplete="tel">
-<label for="f-msg">Μήνυμα *</label><textarea id="f-msg" name="msg" rows="5" required></textarea>
-<label style="font-weight:400"><input type="checkbox" required style="width:auto"> Συμφωνώ με την <a href="/conditions/">πολιτική απορρήτου</a>.</label>
-<button class="btn" type="submit">Αποστολή</button></form></div></section>''',
+    phero("Επικοινωνία", "Ας μιλήσουμε", "Συνεδρίες και ενημέρωση γίνονται κατόπιν ραντεβού. Γράψε μας ή πάρε τηλέφωνο."),
+    f'''<section><div class="wrap split" style="align-items:start">
+<div class="stack"><p class="label">Γρήγορα</p><h2>Τηλέφωνο ή e-mail</h2>
+<p class="big"><a href="tel:{BUSINESS['phone']}">{BUSINESS['phone_disp']}</a><br><a href="tel:{BUSINESS['mobile']}">{BUSINESS['mobile_disp']}</a><br><a href="mailto:{BUSINESS['email']}">{BUSINESS['email']}</a></p>
+<p style="color:var(--muted)">Προτιμάς να κλείσεις μόνος σου; Δες τη διαθεσιμότητα στην <a href="/book-now/">online κράτηση</a>.</p></div>
+<div class="formcard"><form method="post" action="#" onsubmit="alert('Προεπισκόπηση: εδώ συνδέεται η φόρμα του WordPress (π.χ. Contact Form 7).');return false">
+<div><label for="f-name">Ονοματεπώνυμο</label><input id="f-name" name="name" required autocomplete="name"></div>
+<div><label for="f-tel">Τηλέφωνο</label><input id="f-tel" name="tel" type="tel" required autocomplete="tel"></div>
+<div class="full"><label for="f-mail">E-mail</label><input id="f-mail" name="email" type="email" required autocomplete="email"></div>
+<div class="full"><label for="f-msg">Μήνυμα</label><textarea id="f-msg" name="msg" rows="5" required placeholder="Π.χ. Θέλω να ξεκινήσω Pilates Reformer, έχω ένα θέμα με τη μέση μου…"></textarea></div>
+<label class="check full"><input id="f-ok" type="checkbox" required> Συμφωνώ με την <a href="/conditions/">πολιτική απορρήτου</a>.</label>
+<button class="btn" type="submit">Αποστολή {ARR}</button></form></div>
+</div></section>
+{location("h2")}''',
     crumbs=[("Επικοινωνία", "/contact/")],
     extra_ld=[{"@type": "ContactPage", "@id": SITE + "/contact/#contact", "url": SITE + "/contact/", "mainEntity": {"@id": SITE + "/#gym"}}]))
 
 # Κράτηση
 pages.append(page("/book-now/", "Online Κράτηση Ραντεβού | Training Station Fitness Περιστέρι",
     "Κλείσε online ραντεβού για personal training, group 2–3 ατόμων, digital coaching, διατροφή ή δωρεάν συνάντηση γνωριμίας στο Training Station Fitness, Περιστέρι.",
-    '<section class="hero"><div class="wrap"><h1>Κλείσε online ραντεβού</h1><p class="lead">Διάλεξε υπηρεσία, ημέρα και ώρα. Αν δεν υπάρχει διαθεσιμότητα την ώρα που σε ενδιαφέρει, <a href="tel:+302105767892">κάλεσέ μας</a>!</p></div></section>',
-    f'''<section style="padding-top:0"><div class="wrap">
-<div class="card center" style="min-height:260px;display:flex;flex-direction:column;justify-content:center;border:2px dashed var(--line)">
-<p><strong>Εδώ εμφανίζεται το σύστημα κρατήσεων (Booknetic)</strong></p><p style="font-size:15px">Στην προεπισκόπηση δεν φορτώνει. Στο WordPress μένει όπως είναι σήμερα.</p></div>
-<div class="content" style="margin-top:32px">
-<h2>Ποιες υπηρεσίες μπορείς να κλείσεις;</h2>
-<ul><li><strong>Personal Training (ατομική προπόνηση)</strong> με Καθηγητή Φυσικής Αγωγής.</li><li><strong>Small Group Training (2–3 άτομα)</strong>.</li><li><strong>Digital Coaching</strong> εξ αποστάσεως.</li><li><strong>Διατροφή online</strong> με τη Διαιτολόγο μας.</li><li><strong>Δωρεάν ενημερωτική συνάντηση</strong> γνωριμίας.</li></ul>
-<h2>Πώς κλείνεις ραντεβού;</h2>
-<ol><li>Διάλεξε την υπηρεσία.</li><li>Επίλεξε ημερομηνία και ώρα.</li><li>Συμπλήρωσε τα στοιχεία σου.</li><li>Λαμβάνεις επιβεβαίωση με email ή SMS.</li></ol>
-</div></div></section>''',
+    phero("Κράτηση", "Κλείσε online ραντεβού", f'Διάλεξε υπηρεσία, ημέρα και ώρα. Δεν βρίσκεις διαθεσιμότητα; Κάλεσε στο <a href="tel:{BUSINESS["phone"]}">{BUSINESS["phone_disp"]}</a>.'),
+    f'''<section><div class="wrap svc">
+<div class="placeholder"><p class="label">Σύστημα κρατήσεων</p><h3 style="margin:12px 0">Εδώ εμφανίζεται το Booknetic</h3><p style="color:var(--muted)">Στην προεπισκόπηση δεν φορτώνει. Στο WordPress μένει όπως είναι σήμερα.</p></div>
+<aside class="aside"><p class="label">Πώς λειτουργεί</p>
+<div class="prose" style="color:var(--on-ink)"><ol><li>Διάλεξε υπηρεσία</li><li>Επίλεξε ημέρα και ώρα</li><li>Συμπλήρωσε τα στοιχεία σου</li><li>Παίρνεις επιβεβαίωση με e-mail ή SMS</li></ol></div>
+<p style="color:var(--on-ink-2)">Δεν ξέρεις τι να διαλέξεις; Κλείσε τη <strong style="color:#fff">δωρεάν συνάντηση γνωριμίας</strong>.</p></aside>
+</div></section>
+<section class="ink"><div class="wrap"><div class="head-row"><div><p class="label">Τι μπορείς να κλείσεις</p><h2 style="margin-top:12px">Όλες οι υπηρεσίες</h2></div></div>{board()}</div></section>''',
     crumbs=[("Κράτηση", "/book-now/")]))
 
 # Gift cards
 pages.append(page("/gift-cards/", "Δωροκάρτες Γυμναστικής (Gift Cards) Περιστέρι | Training Station",
     "Χάρισε προπόνηση! Δωροκάρτες για personal training, Pilates Reformer και διατροφή στο Training Station Fitness, Περιστέρι. Ιδανικό δώρο για γενέθλια και γιορτές.",
-    '<section class="hero"><div class="wrap"><h1>Gift cards – Χάρισε προπόνηση</h1><p class="lead">Το δώρο που φροντίζει την υγεία: συνεδρίες personal training, Pilates Reformer ή διατροφής, σε δωροκάρτα.</p></div></section>',
-    f'''<section style="padding-top:0"><div class="wrap grid-2">
-<div class="content"><h2>Πώς λειτουργεί</h2><ol><li>Διάλεξε υπηρεσία ή πακέτο από τον <a href="/pricing/">τιμοκατάλογο</a> ή ποσό της επιλογής σου.</li><li>Επικοινώνησε μαζί μας στο <a href="tel:+302105767892">210 576 7892</a> ή στο <a href="mailto:info@trainingstationfitness.com">info@trainingstationfitness.com</a>.</li><li>Παραλαμβάνεις τη δωροκάρτα (έντυπη ή ψηφιακή) με το όνομα του δικού σου ανθρώπου.</li><li>Ο κάτοχος κλείνει ραντεβού όποτε τον βολεύει.</li></ol>
-<p>Διάρκεια ισχύος: {todo("π.χ. 6 μήνες","Πόσο ισχύει η δωροκάρτα;")}</p>
+    phero("Gift cards", "Χάρισε<br><span class=\"blue-txt\">προπόνηση</span>", "Το δώρο που φροντίζει την υγεία: συνεδρίες personal training, Pilates Reformer ή διατροφής, σε δωροκάρτα."),
+    f'''<section><div class="wrap split">
+<img class="pin-one" src="/assets/img/gift-card.webp" width="900" height="638" alt="Δωροκάρτα Training Station Fitness με κόκκινο φιόγκο" loading="lazy">
+<div class="prose"><p class="label">Πώς λειτουργεί</p><h2 style="margin-top:10px">Σε τέσσερα βήματα</h2>
+<ol><li>Διάλεξε πακέτο από τον <a href="/pricing/">τιμοκατάλογο</a> ή ποσό της επιλογής σου.</li><li>Επικοινώνησε στο <a href="tel:+302105767892">210 576 7892</a> ή στο <a href="mailto:info@trainingstationfitness.com">info@trainingstationfitness.com</a>.</li><li>Παραλαμβάνεις τη δωροκάρτα, έντυπη ή ψηφιακή, με το όνομα του δικού σου ανθρώπου.</li><li>Ο κάτοχος κλείνει ραντεβού όποτε τον βολεύει.</li></ol>
+<p>Ισχύς: {todo("π.χ. 6 μήνες", "Πόσο ισχύει η δωροκάρτα;")}</p>
 <h2>Ιδανική για</h2><ul><li>Γενέθλια, γιορτές, Χριστούγεννα</li><li>Όποιον θέλει να ξεκινήσει γυμναστική με σωστή καθοδήγηση</li><li>Εταιρικά δώρα</li></ul>
-<a class="btn" href="/contact/">Παράγγειλε gift card</a></div>
-<img src="/assets/img/gift-card.webp" width="900" height="638" alt="Δωροκάρτα Training Station Fitness" loading="lazy" style="border-radius:14px">
+<p><a class="btn" href="/contact/">Παράγγειλε gift card {ARR}</a></p></div>
 </div></section>''',
     crumbs=[("Gift cards", "/gift-cards/")], og_image="gift-card.webp"))
 
-# Όροι (σύνοψη – το πλήρες κείμενο μένει από το υπάρχον site)
+# Όροι
 pages.append(page("/conditions/", "Όροι Χρήσης & Πολιτική Απορρήτου | Training Station Fitness",
     "Όροι χρήσης, πολιτική απορρήτου και cookies του trainingstationfitness.com (ΕΜΜΑΝΟΥΗΛ ΤΣΑΓΚΑΤΑΚΗΣ – Training Station Fitness).",
-    '<section class="hero"><div class="wrap"><h1>Όροι χρήσης &amp; πολιτική απορρήτου</h1></div></section>',
-    f'''<section style="padding-top:0"><div class="wrap content" style="margin:0 auto">
+    phero("Νομικά", "Όροι χρήσης &amp; απόρρητο"),
+    f'''<section><div class="wrap"><div class="prose">
 <p>Η ιστοσελίδα trainingstationfitness.com ανήκει στην επιχείρηση «{esc(BUSINESS['legal_name'])}» με διακριτικό τίτλο «TRAINING STATION FITNESS» (Αρ. Γ.Ε.ΜΗ {BUSINESS['gemi']}), με έδρα την οδό Παρασκευοπούλου 47, Περιστέρι.</p>
-<p class="todo">Προεπισκόπηση: εδώ μπαίνει αυτούσιο το πλήρες κείμενο όρων από το υπάρχον site.</p>
+<p>{todo("Εδώ μπαίνει αυτούσιο το πλήρες κείμενο όρων από το υπάρχον site.", "Κείμενο όρων")}</p>
 <h2 id="cookies">Cookies</h2>
 <p>Τα απαραίτητα cookies χρειάζονται για τη λειτουργία του site. Cookies μέτρησης (Google Analytics) και διαφήμισης (Meta Pixel) ενεργοποιούνται <strong>μόνο</strong> αν δώσεις συγκατάθεση, και μπορείς να την ανακαλέσεις οποιαδήποτε στιγμή από τις <a href="#" data-cookie-settings>ρυθμίσεις cookies</a>.</p>
-</div></section>''',
+</div></div></section>''',
     crumbs=[("Όροι χρήσης", "/conditions/")]))
 
 # 404
 page("/404.html", "Η σελίδα δεν βρέθηκε | Training Station Fitness", "Η σελίδα που ζητήσατε δεν βρέθηκε. Δείτε τις υπηρεσίες του Training Station Fitness στο Περιστέρι.",
-     '<section class="hero"><div class="wrap"><h1>Η σελίδα δεν βρέθηκε</h1><p class="lead">Ίσως σε ενδιαφέρουν:</p><div class="btns" style="justify-content:center"><a class="btn" href="/">Αρχική</a><a class="btn ghost" href="/services/">Υπηρεσίες</a></div></div></section>',
-     "", noindex=True)
+     phero("404", "Λάθος πλατφόρμα", 'Η σελίδα δεν βρέθηκε. Διάλεξε προορισμό παρακάτω ή γύρνα στην <a href="/">αρχική</a>.'),
+     f'<section class="ink" style="padding-top:0"><div class="wrap">{board()}</div></section>', noindex=True)
 
 # ---------------------------------------------------------------- robots / sitemap / llms.txt
 with open(os.path.join(OUT, "robots.txt"), "w") as f:

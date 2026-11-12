@@ -35,3 +35,13 @@ document.querySelectorAll('.map-facade button').forEach(function(btn){
   }
   document.querySelectorAll('[data-cookie-settings]').forEach(function(a){a.addEventListener('click',function(e){e.preventDefault();box&&box.classList.add('show')})});
 })();
+
+// Ρολόι του πίνακα αναχωρήσεων (ώρα Αθήνας)
+(function(){
+  var els=document.querySelectorAll('[data-clock]'); if(!els.length) return;
+  function tick(){
+    var t; try{t=new Intl.DateTimeFormat('el-GR',{hour:'2-digit',minute:'2-digit',hour12:false,timeZone:'Europe/Athens'}).format(new Date())}catch(e){var d=new Date();t=('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2)}
+    els.forEach(function(el){el.textContent=t});
+  }
+  tick(); setInterval(tick,15000);
+})();
