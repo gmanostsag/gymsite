@@ -1,92 +1,130 @@
 /* ============================================================
    Training Station Fitness – κουμπιά
    Επικόλληση: Εμφάνιση → Προσαρμογή → Πρόσθετο CSS (Astra) → Δημοσίευση
+   Χρώματα brand: πράσινο #22a06b → μπλε #0a62d0 → βαθύ μπλε #1a2fd6
    ============================================================ */
 
-/* 1. Όλα τα κουμπιά Elementor: ένα μπλε, ίδιο μέγεθος, χωρίς gradient */
-.elementor a.elementor-button,
-.elementor .elementor-button {
-  background: #0a62d0 !important;
-  background-image: none !important;
-  color: #fff !important;
-  border: 2px solid #0a62d0 !important;
+/* 1. Βάση για όλα τα κουμπιά Elementor */
+.elementor a.elementor-button {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   border-radius: 999px !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  letter-spacing: .02em !important;
-  text-transform: none !important;   /* κανονικά γράμματα: χωρίς θέμα τόνων στα κεφαλαία */
+  font-weight: 800 !important;
+  letter-spacing: .09em !important;
+  text-transform: uppercase !important;
   line-height: 1.1 !important;
-  padding: 15px 28px !important;
-  min-height: 48px;                  /* εύκολο πάτημα στο κινητό */
-  box-shadow: none !important;
   text-shadow: none !important;
   filter: none !important;
-  transition: background-color .2s, border-color .2s, color .2s;
+  min-height: 48px;
+  transition: transform .25s ease, box-shadow .25s ease, background-position .5s ease, color .25s ease !important;
 }
 .elementor a.elementor-button .elementor-button-text,
 .elementor a.elementor-button .elementor-button-icon { color: inherit !important; text-shadow: none !important; filter: none !important; }
 .elementor a.elementor-button .elementor-button-icon svg { fill: currentColor !important; }
+.elementor a.elementor-button .elementor-button-content-wrapper { gap: 10px; align-items: center; }
 
-/* Το κουμπί κράτησης μένει το πιο εμφανές */
+/* «Αντανάκλαση» που περνάει πάνω από το κουμπί στο hover */
+.elementor a.elementor-button::after {
+  content: "";
+  position: absolute;
+  top: 0; left: -75%;
+  width: 50%; height: 100%;
+  background: linear-gradient(100deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.45) 50%, rgba(255,255,255,0) 100%);
+  transform: skewX(-20deg);
+  z-index: -1;
+  pointer-events: none;
+  transition: left .7s ease;
+}
+.elementor a.elementor-button:hover::after { left: 130%; }
+
+/* 2. ΚΥΡΙΟ: κουμπί κράτησης – γεμάτο gradient με λάμψη */
 .elementor a.elementor-button[href*="book-now"] {
-  font-size: 18px !important;
-  padding: 18px 34px !important;
-  min-height: 56px;
+  background: linear-gradient(120deg, #22a06b 0%, #0a62d0 45%, #1a2fd6 75%, #22a06b 100%) !important;
+  background-size: 220% 100% !important;
+  background-position: 0% 50% !important;
+  color: #fff !important;
+  border: 0 !important;
+  font-size: 19px !important;
+  padding: 19px 38px !important;
+  min-height: 58px;
+  box-shadow: 0 10px 24px -6px rgba(10, 98, 208, .55), 0 2px 0 rgba(255,255,255,.25) inset !important;
 }
-.elementor a.elementor-button:hover,
-.elementor a.elementor-button:focus-visible {
-  background: #084fa8 !important;
-  border-color: #084fa8 !important;
+.elementor a.elementor-button[href*="book-now"]:hover,
+.elementor a.elementor-button[href*="book-now"]:focus-visible {
+  background-position: 100% 50% !important;
+  transform: translateY(-3px);
+  box-shadow: 0 18px 34px -8px rgba(10, 98, 208, .65), 0 2px 0 rgba(255,255,255,.25) inset !important;
 }
+.elementor a.elementor-button[href*="book-now"]:active { transform: translateY(-1px); }
 
-/* 2. Δευτερεύοντα κουμπιά (όλα εκτός από την κράτηση): περίγραμμα αντί για γέμισμα */
+/* 3. ΔΕΥΤΕΡΕΥΟΝΤΑ (Μάθε περισσότερα, χάρτης): λευκά με περίγραμμα gradient, γεμίζουν στο hover */
 .elementor a.elementor-button:not([href*="book-now"]) {
-  background: transparent !important;
-  color: #0a62d0 !important;
+  border: 2px solid transparent !important;
+  background:
+    linear-gradient(#fff, #fff) padding-box,
+    linear-gradient(120deg, #22a06b, #0a62d0 55%, #1a2fd6) border-box !important;
+  color: #0a4fb0 !important;
+  font-size: 14px !important;
+  padding: 14px 28px !important;
+  box-shadow: 0 6px 16px -8px rgba(10, 98, 208, .45) !important;
 }
 .elementor a.elementor-button:not([href*="book-now"]):hover,
 .elementor a.elementor-button:not([href*="book-now"]):focus-visible {
-  background: #0a62d0 !important;
+  background:
+    linear-gradient(120deg, #22a06b, #0a62d0 55%, #1a2fd6) padding-box,
+    linear-gradient(120deg, #22a06b, #0a62d0 55%, #1a2fd6) border-box !important;
   color: #fff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 12px 24px -8px rgba(10, 98, 208, .55) !important;
 }
 
-/* 3. Κουμπί «Αποστολή» στη φόρμα επικοινωνίας (WPForms) */
-div.wpforms-container-full .wpforms-form button[type=submit].wpforms-submit {
-  background: #0a62d0 !important;
+/* 4. Κουμπί «Αποστολή» στη φόρμα (WPForms) – ίδιο με το κύριο */
+.wpforms-container .wpforms-form button[type=submit].wpforms-submit {
+  background: linear-gradient(120deg, #22a06b 0%, #0a62d0 45%, #1a2fd6 75%, #22a06b 100%) !important;
+  background-size: 220% 100% !important;
   color: #fff !important;
-  border: 2px solid #0a62d0 !important;
+  border: 0 !important;
   border-radius: 999px !important;
-  font-size: 16px !important;
-  font-weight: 600 !important;
-  text-transform: none !important;
-  padding: 14px 32px !important;
-  min-height: 48px;
+  font-size: 15px !important;
+  font-weight: 800 !important;
+  letter-spacing: .09em !important;
+  text-transform: uppercase !important;
+  padding: 16px 36px !important;
+  min-height: 52px;
   height: auto !important;
+  box-shadow: 0 10px 24px -6px rgba(10, 98, 208, .55) !important;
+  transition: transform .25s ease, box-shadow .25s ease, background-position .5s ease !important;
 }
-div.wpforms-container-full .wpforms-form button[type=submit].wpforms-submit:hover {
-  background: #084fa8 !important;
-  border-color: #084fa8 !important;
+.wpforms-container .wpforms-form button[type=submit].wpforms-submit:hover {
+  background-position: 100% 50% !important;
+  transform: translateY(-3px);
 }
 
-/* 4. Cookie banner (Cookie Notice): ευανάγνωστα κουμπιά */
+/* 5. Cookie banner (Cookie Notice) */
 #cookie-notice .cn-button {
   font-size: 14px !important;
-  font-weight: 600 !important;
+  font-weight: 700 !important;
+  letter-spacing: .03em !important;
   padding: 12px 22px !important;
   min-height: 44px;
   border-radius: 999px !important;
   line-height: 1.1 !important;
 }
 #cookie-notice #cn-accept-cookie {
-  background: #fff !important;
-  color: #46494c !important;
-  border: 1px solid #fff !important;
+  background: linear-gradient(120deg, #22a06b, #0a62d0 55%, #1a2fd6) !important;
+  color: #fff !important;
+  border: 0 !important;
 }
 #cookie-notice #cn-more-info {
   background: transparent !important;
   color: #fff !important;
-  border: 1px solid #fff !important;
+  border: 1px solid rgba(255,255,255,.8) !important;
 }
 
-/* 5. Μικρό κενό ανάμεσα σε εικονίδιο και κείμενο */
-.elementor a.elementor-button .elementor-button-content-wrapper { gap: 8px; align-items: center; }
+/* Όσοι έχουν ζητήσει λιγότερη κίνηση στη συσκευή τους: χωρίς animation */
+@media (prefers-reduced-motion: reduce) {
+  .elementor a.elementor-button,
+  .elementor a.elementor-button::after { transition: none !important; }
+  .elementor a.elementor-button:hover { transform: none !important; }
+}
