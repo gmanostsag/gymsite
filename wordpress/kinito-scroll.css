@@ -1,19 +1,38 @@
 /* ============================================================
-   Διόρθωση: το site «κουνιέται» πλάγια στο κινητό όταν κάνεις scroll
-   Αιτία: το υποσέλιδο (Astra → Primary Footer) έχει margin 10px και width 100%,
-   άρα βγαίνει 10px έξω από την οθόνη δεξιά.
+   Training Station – το site να μην κουνιέται στο κινητό
    ============================================================ */
 
-/* 1. Το υποσέλιδο κρατάει το περιθώριο αλλά χωράει στην οθόνη */
+/* 1. ΔΕΞΙΑ–ΑΡΙΣΤΕΡΑ: το υποσέλιδο (Astra → Primary Footer) έχει margin 10px
+      και πλάτος 100%, άρα βγαίνει 10px έξω από την οθόνη. */
 .site-primary-footer-wrap[data-section="section-primary-footer-builder"] {
   width: auto !important;
-  max-width: 100%;
-  box-sizing: border-box;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+.site-footer iframe { max-width: 100% !important; }
+
+/* Δίχτυ ασφαλείας: τίποτα δεν σπρώχνει τη σελίδα πλάγια */
+html, body { overflow-x: hidden; }
+@supports (overflow-x: clip) {
+  html, body { overflow-x: clip; }
 }
 
-/* 2. Δίχτυ ασφαλείας: τίποτα δεν μπορεί να σπρώξει τη σελίδα πλάγια.
-      Το "clip" (αντί για "hidden") δεν χαλάει το sticky μενού. */
-html, body { overflow-x: clip; }
-
-/* 3. Ο χάρτης στο υποσέλιδο να μην ξεπερνά ποτέ το πλάτος */
-.site-footer iframe { max-width: 100%; }
+/* 2. ΠΑΝΩ–ΚΑΤΩ: τα κινούμενα εφέ εισόδου του Elementor (slideInUp, fadeInDown,
+      bounceIn, tada…) κουνάνε το περιεχόμενο όσο κάνεις scroll.
+      Στο κινητό τα κλείνουμε: όλα εμφανίζονται αμέσως, ακίνητα. */
+@media (max-width: 1024px) {
+  .elementor-invisible {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+  .elementor-element.animated,
+  .elementor-element .animated {
+    animation: none !important;
+    -webkit-animation: none !important;
+  }
+}
+/* Όποιος έχει ζητήσει λιγότερη κίνηση στη συσκευή του: κλειστά παντού */
+@media (prefers-reduced-motion: reduce) {
+  .elementor-invisible { visibility: visible !important; opacity: 1 !important; }
+  .elementor-element.animated { animation: none !important; }
+}
